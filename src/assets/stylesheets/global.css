@@ -2,9 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+    font-family: HelveticaNeue93;
+    src: url('../fonts/HelveticaNeue93BlExt.ttf') format('truetype');
+}
+
 @layer base {
     html {
-        @apply bg-base;
-        @apply text-txt;
+        @apply bg-base text-txt;
+    }
+
+    body {
+        @apply px-6 md:px-12 lg:px-24;
+    }
+
+    .no-scroll::-webkit-scrollbar {
+        display: none;
+    }
+
+    canvas {
+        background-color: transparent;
     }
 }

@@ -3,6 +3,7 @@ import { useRoutes } from "react-router-dom";
 import { Index } from "./Index";
 import JSONData from './assets/json/data.json';
 import { Coin } from "./Coin";
+import { NavBar } from "./NavBar";
 
 const BINANCE_BASE_URL = "https://api.binance.com";
 const CG_BASE_URL = "https://api.coingecko.com/api/v3";
@@ -70,6 +71,7 @@ export const App = (): (React.ReactElement | null) => {
 
     return (
         <AppContext.Provider value={contextStates}>
+            <NavBar />
             {routes}
         </AppContext.Provider>
     );
