@@ -1,5 +1,5 @@
 import { useRoutes } from "react-router-dom";
-import Index from "./Index";
+import { Index } from "./Index";
 
 const App = (): (React.ReactElement | null) => {
     const routes: (React.ReactElement | null) = useRoutes([
