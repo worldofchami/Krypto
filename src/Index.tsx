@@ -25,11 +25,9 @@ const getChangeColour = (change: number): string => {
 
 const getChangeSvg = (change: number): string => {
     if (change >= 0.002) return "stateGood";
-    else if (change > 0) return "stateSlightGood";
+    else if (change >= 0) return "stateSlightGood";
     else if (change <= -0.002) return "stateBad";
-    else if (change < 0) return "slateSlightBad"
-
-    return "stateNeutral";
+    else return "stateSlightBad";
 };
 
 export interface MSChartProps {
@@ -159,7 +157,7 @@ const MarketSummaryContainer: React.FunctionComponent<{}> = () => {
     const data = useContext(AppContext)?.["data"] as Coin[];
 
     const marketSummaryBlocks: JSX.Element[] | undefined = data
-        ?.splice(0, 7)
+        ?.filter((coin, index) => index < 7)
         ?.map(
             (
                 {
@@ -194,7 +192,7 @@ const MarketSummaryContainer: React.FunctionComponent<{}> = () => {
 
     return (
         <>
-            <div className="container h-48 flex overflow-auto gap-8 no-scroll">
+            <div className="container h-48 flex overflow-auto gap-4 no-scroll">
                 {marketSummaryBlocks}
             </div>
         </>
@@ -213,19 +211,36 @@ const CurrencyBlock: React.FunctionComponent<Coin> = ({
     return (
         <>
             <Link to="/">
-                <span>{(idx as number) + 1}.</span>
-                <br />
-                <span>{image}</span>
-                <br />
-                <span>{name}</span>
-                <br />
-                <span>{symbol}</span>
-                <br />
-                <span>{current_price}</span>
-                <br />
-                <span>{price_change_24h}</span>
-                <br />
-                <br />
+                <div className="w-full h-12 bg-base rounded-lg flex items-center px-4 gap-x-3">
+                    <div className="w-fit h-full flex justify-end items-center">
+                        <span className="text-stateNeutral text-xs">{idx as number+1}.</span>
+                    </div>
+                    <div className="w-1/12 h-full flex justify-center items-center">
+                        <img src={image} alt="" className="h-[70%] object-contain" />
+                    </div>
+                    <div className="w-4/12 h-full flex items-center">
+                        <span className="font-bold">{name}</span>
+                        &nbsp;
+                        &nbsp;
+                        <span className="text-[.6rem] font-black">{symbol.toUpperCase()}</span>
+                    </div>
+                    <div className="w-4/12 h-full mr-24 flex items-center">
+                        <span className="ml-[50%] text-left text-stateNeutral">${current_price}</span>
+                    </div>
+                    <div className="w-4/12 h-full ml-24 flex items-center justify-start">
+                    <span
+                            className={`text-${getChangeColour(
+                                price_change_24h
+                            )}`}
+                        >
+                            <img src={`/public/${getChangeSvg(price_change_24h)}.svg`} alt="" className="w-[.6rem] h-[.6rem] inline-block"/>
+                            &nbsp;
+                            <span className={`text-xs font-bold text-${getChangeColour(
+                                price_change_24h
+                            )}`}>{roundDecimal(price_change_24h/current_price)}%</span>
+                        </span>
+                    </div>
+                </div>
             </Link>
         </>
     );
@@ -236,7 +251,7 @@ const CurrencyBlockContainer: React.FunctionComponent<{}> = () => {
     const data = useContext(AppContext)?.["data"] as Coin[];
 
     const currencyBlocks: JSX.Element[] | undefined = data
-        ?.splice(0, blockCount)
+        ?.filter((coin, index) => index < blockCount)
         ?.map(
             (
                 { id, name, symbol, image, current_price, price_change_24h },
@@ -257,7 +272,13 @@ const CurrencyBlockContainer: React.FunctionComponent<{}> = () => {
             }
         );
 
-    return <>{currencyBlocks}</>;
+    return (
+        <>
+            <div className="bg-[rgb(22,22,22)] w-full rounded-2xl flex flex-col gap-y-1 p-4">
+                {currencyBlocks}
+            </div>
+        </>
+    );
 };
 
 export const Index: React.FunctionComponent<{}> = () => {
@@ -265,7 +286,16 @@ export const Index: React.FunctionComponent<{}> = () => {
         <>
             <SectionHeading text="Market Summary" primary={false} />
             <MarketSummaryContainer />
-            <SectionHeading text="Cryptocurrencies" primary={false} />
+            <div className="flex h-[28rem] gap-x-4">
+                <div className="w-1/2 h-full overflow-hidden">
+                    <SectionHeading text="Cryptocurrencies" primary={false} />
+                    <CurrencyBlockContainer />
+                </div>
+                <div className="w-1/2">
+                    <SectionHeading text="Headlines" primary={false} />
+                    <CurrencyBlockContainer />
+                </div>
+            </div>
         </>
     );
 };

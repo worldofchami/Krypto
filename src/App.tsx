@@ -55,9 +55,9 @@ export const App = (): (React.ReactElement | null) => {
         };
 
         const getCoinGecko = async (): Promise<void> => {
-            // const response = await fetch(`${CG_BASE_URL}/coins/markets?vs_currency=usd`);
+            const response = await fetch(`${CG_BASE_URL}/coins/markets?vs_currency=usd`);
             
-            const data = JSONData //await response.json();
+            const data = await response.json();
 
             setData(data.map(({ id, name, symbol, image, current_price, price_change_24h, high_24h, low_24h }: Coin) => {
                 return { id, name, symbol, image, current_price, price_change_24h, high_24h, low_24h }
