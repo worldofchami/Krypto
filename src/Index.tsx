@@ -1,22 +1,75 @@
 import { createContext, useEffect, useState, useContext } from "react";
+import { Link } from "react-router-dom";
+import Chart from 'chart.js/auto';
+import { CategoryScale, ChartData, ChartOptions, ChartTypeRegistry } from 'chart.js';
+import { Line } from "react-chartjs-2";
+import { AppContext, Coin } from "./App";
+Chart.register(CategoryScale);
 
-const BINANCE_BASE_URL = "https://api.binance.com";
-const CG_BASE_URL = "https://api.coingecko.com/api/v3";
 
-import JSONData from './assets/json/data.json';
+const roundDecimal = (price: number): number => {
+    return price<1 ? Number(price.toFixed(4)) : Number(price.toFixed(2))
+};
 
-interface Coin {
-    id: string;
-    name: string;
-    symbol: string;
-    image: string;
+export interface MSChartProps {
     current_price: number;
+    high_24h: number;
+    low_24h: number;
     price_change_24h: number;
 };
 
-const MarketSummaryBlock: React.FunctionComponent<Coin> = ({ id, name, symbol, image, current_price, price_change_24h }) => {
+const MarketSummaryChart: React.FunctionComponent<MSChartProps> = ({ current_price, high_24h, low_24h, price_change_24h }) => {
+    const data = [
+        current_price,
+        price_change_24h>0 ? low_24h : high_24h,
+        price_change_24h<=0 ? low_24h : high_24h,
+        current_price
+    ];
+
+    const chartOptions = {
+        plugins: {
+            legend: {
+                display: false,
+            },
+        },
+        scales: {
+            y: {
+              ticks: {
+                display: false,
+              },
+            },
+        }
+    };
+
+    const chartData: ChartData<"line"> = {
+        labels: ['', '', '', ''],
+        datasets: [{
+            data,
+            tension: 0.1,
+            borderColor: 'rgb(116, 251, 155)',
+            stepped: false,
+            
+        },
+    ],
+    };
+
+    return (
+        <Line className="" data={chartData} options={chartOptions} />
+    );
+};
+
+const MarketSummaryBlock: React.FunctionComponent<Coin> = ({ id, name, symbol, image, current_price, price_change_24h, high_24h, low_24h }) => {
+    
     return (
         <>
+            <div className="h-48">
+            <MarketSummaryChart
+                current_price={current_price}
+                high_24h={high_24h as number}
+                low_24h={low_24h as number}
+                price_change_24h={price_change_24h}
+            />
+            </div>
             <span>{id}</span>
             <br />
             <span>{name}</span>
@@ -29,23 +82,19 @@ const MarketSummaryBlock: React.FunctionComponent<Coin> = ({ id, name, symbol, i
             <br />
             <span>{price_change_24h}</span>
             <br />
+            <span>{high_24h}</span>
+            <br />
+            <span>{low_24h}</span>
+            <br />
             <br />
         </>
     );
 };
 
-interface MSCProps {
-    data: Coin[];
-};
-
 const MarketSummaryContainer: React.FunctionComponent<{}> = () => {
-    const data = useContext(DataContext)?.['data'];
+    const data = useContext(AppContext)?.['data'] as Coin[];
 
-    const roundDecimal = (price: number): number => {
-        return price<1 ? Number(price.toFixed(4)) : Number(price.toFixed(2))
-    };
-
-    const marketSummaryBlocks: (JSX.Element[] | undefined) = data?.splice(0,7)?.map(({ id, name, symbol, image, current_price, price_change_24h }, key) => {
+    const marketSummaryBlocks: (JSX.Element[] | undefined) = data?.splice(0,7)?.map(({ id, name, symbol, image, current_price, price_change_24h, high_24h, low_24h }, idx) => {
         return (
             <MarketSummaryBlock
                 id={id}
@@ -54,7 +103,9 @@ const MarketSummaryContainer: React.FunctionComponent<{}> = () => {
                 image={image}
                 current_price={roundDecimal(current_price)}
                 price_change_24h={roundDecimal(price_change_24h/current_price)}
-                key={key}
+                high_24h={high_24h}
+                low_24h={low_24h}
+                idx={idx}
             />
         )
     });
@@ -66,46 +117,60 @@ const MarketSummaryContainer: React.FunctionComponent<{}> = () => {
     );
 };
 
-export const DataContext = createContext<MSCProps | null>(null);
+const CurrencyBlock: React.FunctionComponent<Coin> = ({ id, name, symbol, image, current_price, price_change_24h, idx }) => {
+    return (
+        <>
+            <Link to="/">
+                <span>{idx as number + 1}.</span>
+                <br />
+                <span>{image}</span>
+                <br />
+                <span>{name}</span>
+                <br />
+                <span>{symbol}</span>
+                <br />
+                <span>{current_price}</span>
+                <br />
+                <span>{price_change_24h}</span>
+                <br />
+                <br />
+            </Link>
+        </>
+    );
+};
 
-export const Index: React.FunctionComponent<{}> = () => {
-    const [data, setData] = useState<Coin[]>([]);
+const CurrencyBlockContainer: React.FunctionComponent<{}> = () => {
+    const [blockCount, setBlockCount] = useState<number>(6);
+    const data = useContext(AppContext)?.['data'] as Coin[];
 
-    const contextStates = {
-        data,
-    };
-
-    // /*
-
-    useEffect(() => {
-        //Get BTC price
-        const getBinance = async (): Promise<void> => {
-            const response = await fetch(`${BINANCE_BASE_URL}/api/v3/avgPrice?symbol=ETHBTC`);
-
-            const data = await response.json();
-
-            setData(data);
-        };
-
-        const getCoinGecko = async (): Promise<void> => {
-            // const response = await fetch(`${CG_BASE_URL}/coins/markets?vs_currency=usd`);
-            
-            const data = JSONData //await response.json();
-
-            setData(data.map(({ id, name, symbol, image, current_price, price_change_24h }: Coin) => {
-                return { id, name, symbol, image, current_price, price_change_24h }
-            }));
-        };
-
-        getCoinGecko();
-        
-    }, []);
-
-    // */
+    const currencyBlocks: (JSX.Element[] | undefined) = data?.splice(0, blockCount)?.map(({ id, name, symbol, image, current_price, price_change_24h }, idx) => {
+        return (
+            <CurrencyBlock
+                id={id}
+                name={name}
+                symbol={symbol}
+                image={image}
+                current_price={roundDecimal(current_price)}
+                price_change_24h={roundDecimal(price_change_24h)}
+                idx={idx}
+                key={`CURRENCY_BLOCK_${idx}`}
+            />
+        )
+    });
 
     return (
-        <DataContext.Provider value={contextStates}>
+        <>
+            {currencyBlocks}
+        </>
+    );
+};
+
+
+export const Index: React.FunctionComponent<{}> = () => {
+
+    return (
+        <>
             <MarketSummaryContainer />
-        </DataContext.Provider>
+        </>
     );
 };
