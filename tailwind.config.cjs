@@ -8,11 +8,15 @@ module.exports = {
     extend: {
       colors: {
         base: 'rgb(32,32,32)',
-        highlight: 'rgb(116, 251, 155)',
+        highlight: '#00ff90',
         txt: 'white',
-        stateBad: 'rgb(233, 59, 60)',
-        stateNeutral: 'rgb(148, 148, 148)',
-      }
+        stateGood: '#00ff90',
+        stateBad: '#fe1b30',
+        stateNeutral: '#949494',
+      },
+      fontFamily: {
+        heading: ['HelveticaNeue93', 'sans-serif']
+      },
     },
   },
   plugins: [],
