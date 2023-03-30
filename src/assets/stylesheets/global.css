@@ -9,7 +9,7 @@
 
 @layer base {
     html {
-        @apply bg-base text-txt;
+        @apply bg-baseColour text-txt;
     }
 
     body {

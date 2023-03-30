@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 interface ButtonProps {
     text: string;
 };
@@ -12,7 +14,7 @@ export const PrimaryButton: React.FunctionComponent<ButtonProps> = ({ text }) =>
 
 interface TextProps {
     text: string;
-    primary: boolean;
+    primary?: boolean;
 };
 
 export const SectionHeading: React.FunctionComponent<TextProps> = ({ text, primary }) => {
@@ -24,3 +26,18 @@ export const SectionHeading: React.FunctionComponent<TextProps> = ({ text, prima
         </h1>
     )
 };
+
+interface CurrencyProps extends TextProps {
+    id: string;
+};
+
+export const CurrencyPill: React.FunctionComponent<CurrencyProps> = ({ text, id }) => {
+
+    return (
+        <Link to={`/coin/${id}`} target="_blank">
+            <div className="w-fit sm:h-fit px-2 bg-highlight hover:opacity-75 rounded-full">
+                <h1 className="text-baseColour text-[.75rem] sm:text-[.9rem] font-bold">${text}</h1>
+            </div>
+        </Link>
+    );
+}
