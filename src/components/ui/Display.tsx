@@ -1,3 +1,4 @@
+import { createContext, Dispatch, SetStateAction, useContext } from "react";
 import { Link } from "react-router-dom";
 
 interface ButtonProps {
@@ -40,4 +41,66 @@ export const CurrencyPill: React.FunctionComponent<CurrencyProps> = ({ text, id 
             </div>
         </Link>
     );
-}
+};
+
+interface DropDownProps {
+    text: string;
+    selected: boolean;
+    value: string;
+};
+
+export const DropDown: React.FunctionComponent<DropDownProps> = ({ text, selected, value }) => {
+    const bgColour = selected ? 'highlight' : 'baseColour';
+    const textColour = selected ? 'baseColour' : 'txt';
+
+    const modifier = (useContext(ModifierContext) as StateModifier).modifier;
+
+    return (
+        <>
+            <div
+                className={`w-[3rem] h-fit p-1 rounded-full bg-${bgColour} hover:bg-highlight hover:text-baseColour`}
+                onClick={({ currentTarget }) => {
+                    if(!selected) {
+                        modifier(value);
+                        ((currentTarget.parentElement as HTMLElement).parentElement as HTMLElement).toggleAttribute('open')
+                    }
+                }}
+            >
+                <h1 className={`text-${textColour} text-xs font-bold text-right`}>{text.toUpperCase()}</h1>
+            </div>
+        </>
+    );
+};
+
+interface StateModifier {
+    modifier: (period: string) => void;
+};
+
+const ModifierContext = createContext<StateModifier | null>(null);
+
+interface DropDownContainerProps {
+    children?: React.ReactNode[];
+    modifier: (period: string) => void;
+    text: string;
+};
+
+export const DropDownContainer: React.FunctionComponent<DropDownContainerProps> = ({ children, modifier, text }) => {
+    children = [
+        ...children as React.ReactNode[]
+    ];
+
+    return (
+        <ModifierContext.Provider value={{ modifier }}>
+            <div className="cursor-pointer">
+                <details className="w-fit h-max">
+                    <summary className="w-[3rem] h-fit p-1 rounded-full bg-highlight text-baseColour justify-end">
+                        <h1 className="text-baseColour text-xs font-bold text-right">{text.toUpperCase()}</h1>
+                    </summary>
+                    <div className="absolute">
+                        {children}
+                    </div>
+                </details>
+            </div>
+        </ModifierContext.Provider>
+    );
+};

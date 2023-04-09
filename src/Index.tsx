@@ -23,13 +23,13 @@ import {
 } from "./components/ui/Display";
 Chart.register(CategoryScale);
 
-const roundDecimal = (num: number): number => {
+export const roundDecimal = (num: number): number => {
     const rounded = num.toFixed(4);
 
     return Number(rounded);
 };
 
-const roundedDecimalAsString = (num: number): string => {
+export const roundedDecimalAsString = (num: number): string => {
     return num.toFixed(4);
 };
 
@@ -245,9 +245,10 @@ const CurrencyBlock: React.FunctionComponent<Coin> = ({
     price_change_24h,
     idx,
 }) => {
+    console.log(id)
     return (
         <>
-            <Link to="/">
+            <Link to={`/coin/${id.toLowerCase()}`}>
                 <div className="w-full h-16 sm:h-12 bg-baseColour hover:opacity-75 rounded-lg grid grid-cols-12 grid-rows-4 auto-cols-min sm:flex items-center px-4 ">
                     <div className="w-fit sm:w-6 h-full flex justify-start items-center row-span-4">
                         <span className="text-stateNeutral text-[.6rem] md:text-xs">
@@ -341,7 +342,7 @@ const CurrencyBlockContainer: React.FunctionComponent<{}> = () => {
     );
 };
 
-const NewsBlock: React.FunctionComponent<NewsArticle> = ({
+export const NewsBlock: React.FunctionComponent<NewsArticle> = ({
     kind,
     source,
     title,
