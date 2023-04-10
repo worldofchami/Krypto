@@ -1,3 +1,16 @@
 {
-    "bitcoin": "btc"
+    "bitcoin": "bitcoin",
+    "ethereum": "ethereum",
+    "tether": "tether",
+    "binancecoin": "binance-coin",
+    "usd-coin": "usd-coin",
+    "ripple": "xrp",
+    "cardano": "cardano",
+    "staked-ether": "steth",
+    "dogecoin": "dogecoin",
+    "matic-network": "polygon",
+    "uniswap": "uniswap",
+    "arbitrum": "NONE",
+    "solana": "solana",
+    "decentraland": "decentraland"
 }

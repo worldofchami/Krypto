@@ -134,9 +134,9 @@ export const App = (): React.ReactElement | null => {
         };
 
         const getCoinGecko = async (): Promise<void> => {
-            //const response = await fetch(`${CG_BASE_URL}/coins/markets?vs_currency=usd`);
+            const response = await fetch('http://localhost:3000/coingecko');
 
-            const data = JSONData; //await response.json();
+            const data = await response.json();
 
             setData(
                 data.map(
