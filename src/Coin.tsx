@@ -109,9 +109,7 @@ export const Coin: React.FunctionComponent<{}> = () => {
     const [chartPeriod, setChartPeriod] = useState<string>("d1");
 
     const fetchPriceData = async (): Promise<void> => {
-        const response = await fetch(
-            `${COIN_CAP_BASE_URL}/assets/${id}/history?interval=${chartPeriod}`
-        );
+        const response = await fetch(`http://localhost:3000/price/${id}`);
         const data = await response.json();
 
         setPriceData(

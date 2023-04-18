@@ -1,5 +1,9 @@
 import { createContext, Dispatch, SetStateAction, useContext } from "react";
 import { Link } from "react-router-dom";
+import AliasesJSON from '../../../public/aliases.json';
+
+// TODO: find more efficient way without parsing & stringifying
+export const aliases = JSON.parse(JSON.stringify(AliasesJSON));
 
 interface ButtonProps {
     text: string;
@@ -33,9 +37,16 @@ interface CurrencyProps extends TextProps {
 };
 
 export const CurrencyPill: React.FunctionComponent<CurrencyProps> = ({ text, id }) => {
+    // TODO: add global variables and remove redeclaring of coinURL
+    
+    const coinAlias = aliases[id];
+    const coinURL =
+        coinAlias === 'NONE' ?
+        '' :
+        `/coin/${coinAlias}`;
 
     return (
-        <Link to={`/coin/${id}`} target="_blank">
+        <Link to={coinURL} target="_blank">
             <div className="w-fit sm:h-fit px-2 bg-highlight hover:opacity-75 rounded-full">
                 <h1 className="text-baseColour text-[.75rem] sm:text-[.9rem] font-bold">${text}</h1>
             </div>

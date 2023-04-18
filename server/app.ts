@@ -2,7 +2,7 @@ import express from "express";
 const app = express();
 import dotenv from "dotenv";
 dotenv.config();
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
     console.log("listening", port);
@@ -139,7 +139,7 @@ const getCoinGecko = async (): Promise<void> => {
 };
 
 app.get('/coingecko', (req, res) => {
-    res.send(JSON.stringify(CGData));
+    res.json(CGData);
 });
 
 let CoinData: CoinInfo;
@@ -160,7 +160,7 @@ const fetchCoinData = async (): Promise<void> => {
 };
 
 app.get('/info', (req, res) => {
-    res.send(JSON.stringify(CoinData));
+    res.json(CoinData);
 });
 
 export interface Test {
@@ -170,25 +170,29 @@ export interface Test {
 }
 
 let PriceData: CoinPrices[] = [];
+let id: string = "";
 
-const fetchPriceData = async (): Promise<void> => {
+const fetchPriceData = async (id: string): Promise<void> => {
     const response = await fetch(
-        `${COIN_CAP_BASE_URL}/assets/${'bitcoin'}/history?interval=${'d1'}`
+        `${COIN_CAP_BASE_URL}/assets/${id}/history?interval=${'d1'}`
     );
     const data = await response.json();
 
-    PriceData = (
-        data.data.map(({ priceUsd, time, date }: Test) => {
-            return {
-                price: priceUsd,
-                time: new Date(time),
-                date: new Date(date),
-            } as CoinPrices;
-        })
-    );
+    // PriceData = (
+    //     data.data.map(({ priceUsd, time, date }: Test) => {
+    //         return {
+    //             price: priceUsd,
+    //             time: new Date(time),
+    //             date: new Date(date),
+    //         } as CoinPrices;
+    //     })
+    // );
+
+    PriceData = data;
 };
 
-app.get('/price', (req, res) => {
+app.get('/price/:id', async (req, res) => {
+    await fetchPriceData(req.params.id);
     res.send(JSON.stringify(PriceData));
 });
 
@@ -203,7 +207,7 @@ const getData5S = async(): Promise<void> => {
 };
 
 const getPrices = async (): Promise<void> => {
-    await fetchPriceData();
+    await fetchPriceData(id);
     console.log("Price refresh")
 };
 
@@ -213,11 +217,11 @@ const getData1D = async (): Promise<void> => {
 };
 
 const getData = async () => {
-    getData5S()
+    getData5S();
     getPrices();
     // getData1D();
 };
 
 getData();
 setInterval(getData5S, 50000);
-setInterval(getPrices, 50000);
+// setInterval(getPrices, 50000);
