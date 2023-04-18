@@ -17,6 +17,7 @@ import {
     NewsArticle,
 } from "./App";
 import {
+    aliases,
     CurrencyPill,
     PrimaryButton,
     SectionHeading,
@@ -245,10 +246,15 @@ const CurrencyBlock: React.FunctionComponent<Coin> = ({
     price_change_24h,
     idx,
 }) => {
-    console.log(id)
+    const coinAlias = aliases[id.toLowerCase()];
+    const coinURL =
+        coinAlias === 'NONE' ?
+        '' :
+        `/coin/${coinAlias}`;
+
     return (
         <>
-            <Link to={`/coin/${id.toLowerCase()}`}>
+            <Link to={coinURL}>
                 <div className="w-full h-16 sm:h-12 bg-baseColour hover:opacity-75 rounded-lg grid grid-cols-12 grid-rows-4 auto-cols-min sm:flex items-center px-4 ">
                     <div className="w-fit sm:w-6 h-full flex justify-start items-center row-span-4">
                         <span className="text-stateNeutral text-[.6rem] md:text-xs">
