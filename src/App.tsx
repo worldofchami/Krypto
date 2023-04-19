@@ -166,11 +166,11 @@ export const App = (): React.ReactElement | null => {
         };
 
         const getCryptoPanic = async (): Promise<void> => {
-            //const response = await fetch(`${CRYPTO_PANIC_BASE_URL}/posts/?auth_token=${CRYPTO_PANIC_AUTH_TOKEN`);
-            const data = NewsData; //await response.json();
+            const response = await fetch('http://localhost:3000/news');
+            const data = await response.json();
 
             setNewsData(
-                (data.results as NewsArticle[])
+                (data as NewsArticle[])
                     .filter((article: NewsArticle) => article.kind === "news")
                     .filter(
                         (article: NewsArticle) =>

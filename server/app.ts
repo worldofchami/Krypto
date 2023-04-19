@@ -196,10 +196,31 @@ app.get('/price/:id', async (req, res) => {
     res.send(JSON.stringify(PriceData));
 });
 
+let NewsData: NewsArticle[];
 const getCryptoPanic = async (): Promise<void> => {
     const response = await fetch(`${CRYPTO_PANIC_BASE_URL}/posts/?auth_token=${CRYPTO_PANIC_AUTH_TOKEN}`);
     const data = await response.json();
+
+    NewsData =
+        data.results.map(({ kind, source, title, url, currencies, created_at }: NewsArticle) => {
+            const { title: sourceTitle } = source;
+            return {
+                kind,
+                source: {
+                    title: sourceTitle
+                },
+                title,
+                url,
+                currencies,
+                created_at
+             } as NewsArticle;
+        });
 };
+
+app.get('/news', async (req, res) => {
+    await getCryptoPanic();
+    res.send(NewsData);
+});
 
 const getData5S = async(): Promise<void> => {
     await getCoinGecko();
