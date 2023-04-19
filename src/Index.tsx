@@ -246,7 +246,7 @@ const CurrencyBlock: React.FunctionComponent<Coin> = ({
     price_change_24h,
     idx,
 }) => {
-    const coinAlias = aliases[id.toLowerCase()];
+    const coinAlias: string = aliases[id.toLowerCase()];
     const coinURL =
         coinAlias === 'NONE' ?
         '' :
