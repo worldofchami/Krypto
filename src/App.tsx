@@ -2,30 +2,47 @@ import React, { createContext, useEffect, useState } from "react";
 import { useRoutes } from "react-router-dom";
 import { Index } from "./Index";
 import JSONData from "./assets/json/data.json";
-import NewsData from './assets/json/news.json';
+import NewsData from "./assets/json/news.json";
 import { Coin } from "./Coin";
 import { NavBar } from "./NavBar";
 
 export const BINANCE_BASE_URL = "https://api.binance.com";
 export const CG_BASE_URL = "https://api.coingecko.com/api/v3";
 export const CRYPTO_PANIC_BASE_URL = "https://cryptopanic.com/api/v1";
-export const CRYPTO_PANIC_AUTH_TOKEN = "870f6289e6cd7b8c6524ba2f3f90179445c1373b";
+export const CRYPTO_PANIC_AUTH_TOKEN =
+    "870f6289e6cd7b8c6524ba2f3f90179445c1373b";
 export const COIN_CAP_BASE_URL = "https://api.coincap.io/v2";
+
+const processDescription = (description: string): string => {
+    if (description !== undefined) {
+        while (description.indexOf("<") >= 0) {
+            const start = description.substring(0, description.indexOf("<"));
+            const toDelete = description.substring(
+                start.length,
+                description.indexOf(">") + 1
+            );
+
+            description = description.replaceAll(toDelete, "");
+        }
+
+        return description.replaceAll("\\r", "").replaceAll("\\n", "\n");
+    } else return "";
+};
 
 export interface MSCProps {
     data: Coin[];
-};
+}
 
 export interface NBProps {
     newsData: NewsArticle[];
-};
+}
 
 export interface MSChartProps {
     current_price: number;
     high_24h: number;
     low_24h: number;
     price_change_24h: number;
-};
+}
 
 export interface CoinInfo {
     description: string;
@@ -36,13 +53,19 @@ export interface CoinInfo {
     symbol: string;
     page: string;
     rank: number;
-};
+}
 
 export interface CoinPrices {
     price: string;
     time: Date;
     date: Date;
-};
+}
+
+export interface Test {
+    priceUsd: string;
+    time: string;
+    date: string;
+}
 
 export const AppContext = createContext<MSCProps | NBProps | null>(null);
 
@@ -56,7 +79,11 @@ export interface Coin {
     high_24h?: number;
     low_24h?: number;
     idx?: number;
-};
+}
+
+export interface ICoinProps {
+    priceData: CoinPrices[];
+}
 
 export interface NewsArticle {
     kind: "news" | "media";
@@ -65,12 +92,14 @@ export interface NewsArticle {
     };
     title: string;
     url: string;
-    currencies?: [{
-        code: string;
-        title: string;
-    }];
+    currencies?: [
+        {
+            code: string;
+            title: string;
+        }
+    ];
     created_at: string;
-};
+}
 
 export const App = (): React.ReactElement | null => {
     const routes: React.ReactElement | null = useRoutes([
@@ -105,9 +134,9 @@ export const App = (): React.ReactElement | null => {
         };
 
         const getCoinGecko = async (): Promise<void> => {
-            //const response = await fetch(`${CG_BASE_URL}/coins/markets?vs_currency=usd`);
+            const response = await fetch('http://localhost:3000/coingecko');
 
-            const data = JSONData; //await response.json();
+            const data = await response.json();
 
             setData(
                 data.map(
@@ -137,13 +166,16 @@ export const App = (): React.ReactElement | null => {
         };
 
         const getCryptoPanic = async (): Promise<void> => {
-            //const response = await fetch(`${CRYPTO_PANIC_BASE_URL}/posts/?auth_token=${CRYPTO_PANIC_AUTH_TOKEN`);
-            const data = NewsData //await response.json();
+            const response = await fetch('http://localhost:3000/news');
+            const data = await response.json();
 
             setNewsData(
-                (data.results as NewsArticle[])
+                (data as NewsArticle[])
                     .filter((article: NewsArticle) => article.kind === "news")
-                    .filter((article: NewsArticle) => article?.currencies !== undefined)
+                    .filter(
+                        (article: NewsArticle) =>
+                            article?.currencies !== undefined
+                    )
             );
         };
 
