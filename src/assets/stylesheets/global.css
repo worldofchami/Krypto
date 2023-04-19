@@ -23,4 +23,13 @@
     canvas {
         background-color: transparent;
     }
+
+    ::marker, ::-webkit-details-marker {
+        display: none !important;
+    }
+    
+    summary {
+        display: flex;
+    }
+    
 }
