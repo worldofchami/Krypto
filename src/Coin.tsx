@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { aliases } from "./components/ui/Display";
 import {
     CG_BASE_URL,
     CoinInfo,
@@ -99,6 +100,14 @@ const CoinGraph: React.FunctionComponent<ICoinProps> = ({ priceData }) => {
 export const Coin: React.FunctionComponent<{}> = () => {
     const { id } = useParams();
 
+    // TODO: find a more efficient way to do this
+    const coinGeckoAliases: string[] = Object.values((aliases as object));
+    const coinGeckoAliasEntries: [string, string][] = Object.entries((aliases as object));
+
+    const idx: number = coinGeckoAliases.indexOf(id as string);
+
+    const coinGeckoId = (coinGeckoAliasEntries.at(idx) as [string, string]).at(0);
+
     const [priceData, setPriceData] = useState<CoinPrices[]>([]);
 
     const [coinInfo, setCoinInfo] = useState<CoinInfo>();
@@ -125,7 +134,7 @@ export const Coin: React.FunctionComponent<{}> = () => {
 
     useEffect(() => {
         const fetchCoinData = async (): Promise<void> => {
-            const response = await fetch(`${CG_BASE_URL}/coins/${id}`);
+            const response = await fetch(`${CG_BASE_URL}/coins/${coinGeckoId}`);
             const data = await response.json();
             setCoinInfo({
                 description: processDescription(data.description.en),

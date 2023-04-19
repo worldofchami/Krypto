@@ -2,8 +2,9 @@ import { createContext, Dispatch, SetStateAction, useContext } from "react";
 import { Link } from "react-router-dom";
 import AliasesJSON from '../../../public/aliases.json';
 
+type IndexableObject = { [index: string]: string };
 // TODO: find more efficient way without parsing & stringifying
-export const aliases = JSON.parse(JSON.stringify(AliasesJSON));
+export const aliases: IndexableObject = JSON.parse(JSON.stringify(AliasesJSON));
 
 interface ButtonProps {
     text: string;
