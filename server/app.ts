@@ -46,6 +46,7 @@ export interface MSChartProps {
 }
 
 export interface CoinInfo {
+    name: string;
     description: string;
     upvotes: number;
     categories: string[];
@@ -144,17 +145,18 @@ app.get('/coingecko', (req, res) => {
 
 let CoinData: CoinInfo;
 
-const fetchCoinData = async (): Promise<void> => {
-    const response = await fetch(`${CG_BASE_URL}/coins/${'bitcoin'}`);
+const fetchCoinData = async (id: string): Promise<void> => {
+    const response = await fetch(`${CG_BASE_URL}/coins/${id}`);
     const data = await response.json();
     CoinData = ({
-        description: processDescription(data.description.en),
+        name: data.name,
+        description: processDescription(data.description?.en),
         upvotes: data.sentiment_votes_up_percentage,
         categories: data.categories,
         genesisDate: new Date(data.genesis_date),
-        image: data.image.large,
+        image: data.image?.large,
         symbol: data.symbol,
-        page: data.links.homepage[0],
+        page: data.links?.homepage[0],
         rank: data.market_cap_rank,
     } as CoinInfo);
 };
@@ -222,6 +224,11 @@ app.get('/news', async (req, res) => {
     res.send(NewsData);
 });
 
+app.get('/coin/:id', async (req, res) => {
+    await getData1D(req.params.id);
+    res.json(CoinData);
+})
+
 const getData5S = async(): Promise<void> => {
     await getCoinGecko();
     console.log("CoinGecko refresh")
@@ -232,15 +239,14 @@ const getPrices = async (): Promise<void> => {
     console.log("Price refresh")
 };
 
-const getData1D = async (): Promise<void> => {
-    await fetchCoinData();
+const getData1D = async (id: string): Promise<void> => {
+    await fetchCoinData(id);
     console.log("Coin Data refresh");
 };
 
 const getData = async () => {
     getData5S();
     getPrices();
-    // getData1D();
 };
 
 getData();

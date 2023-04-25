@@ -360,9 +360,11 @@ export const NewsBlock: React.FunctionComponent<NewsArticle> = ({
     let currencyPills: JSX.Element[] | undefined;
 
     if (currencies) {
-        currencyPills = currencies?.map(({ code, title }, idx) => {
+        currencyPills = currencies
+        .filter(({ code }) => code.indexOf("_") === -1)
+        .map(({ code, title }, idx) => {
             return <CurrencyPill text={code} id={title.toLowerCase()} key={idx} />;
-        });
+        })
     }
 
     return (

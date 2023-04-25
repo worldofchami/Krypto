@@ -1,6 +1,6 @@
 import { createContext, Dispatch, SetStateAction, useContext } from "react";
 import { Link } from "react-router-dom";
-import AliasesJSON from '../../../public/aliases.json';
+import AliasesJSON from '../../aliases.json';
 
 type IndexableObject = { [index: string]: string };
 // TODO: find more efficient way without parsing & stringifying

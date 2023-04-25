@@ -134,17 +134,18 @@ export const Coin: React.FunctionComponent<{}> = () => {
 
     useEffect(() => {
         const fetchCoinData = async (): Promise<void> => {
-            const response = await fetch(`${CG_BASE_URL}/coins/${coinGeckoId}`);
+            const response = await fetch(`http://localhost:3000/coin/${id}`);
             const data = await response.json();
             setCoinInfo({
-                description: processDescription(data.description.en),
-                upvotes: data.sentiment_votes_up_percentage,
+                name: data.name,
+                description: data.description,
+                upvotes: data.upvotes,
                 categories: data.categories,
-                genesisDate: new Date(data.genesis_date),
-                image: data.image.large,
+                genesisDate: data.date,
+                image: data.image,
                 symbol: data.symbol,
-                page: data.links.homepage[0],
-                rank: data.market_cap_rank,
+                page: data.page,
+                rank: data.rank,
             } as CoinInfo);
         };
 
@@ -232,11 +233,12 @@ export const Coin: React.FunctionComponent<{}> = () => {
                 <div className="flex items-center gap-x-2 h-12">
                     <h1 className="text-5xl font-heading">#{coinInfo?.rank}</h1>
                     <img src={coinInfo?.image} alt="" className="h-4/5 object-contain self-start" />
-                    <h1 className="text-5xl font-heading">{coinInfo?.symbol?.toUpperCase()}</h1>
+                    <h1 className="text-5xl font-heading">{coinInfo?.name}</h1>
                     <h1 className="text-md font-heading">{coinInfo?.symbol?.toUpperCase()}</h1>
                 </div>
                 <div>
                     <h1 className="text-3xl">${roundedDecimalAsString(Number(priceData?.[priceData?.length-1]?.price))}</h1>
+                    <p>{coinInfo?.description}</p>
                 </div>
             </div>
         </>

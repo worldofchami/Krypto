@@ -45,6 +45,7 @@ export interface MSChartProps {
 }
 
 export interface CoinInfo {
+    name: string;
     description: string;
     upvotes: number;
     categories: string[];
