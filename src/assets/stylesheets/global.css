@@ -8,10 +8,13 @@
 }
 
 @layer base {
+<<<<<<< HEAD
     :root {
         color-scheme: dark;
     }
 
+=======
+>>>>>>> af186545fc081c4fc4dacf8355693d6a0be4a412
     html {
         @apply bg-baseColour text-txt;
     }
