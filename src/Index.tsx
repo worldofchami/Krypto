@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState, useContext } from "react";
+import { createContext, useEffect, useState, useContext, useRef, MutableRefObject } from "react";
 import { Link } from "react-router-dom";
 import Chart from "chart.js/auto";
 import {
@@ -22,6 +22,7 @@ import {
     PrimaryButton,
     SectionHeading,
 } from "./components/ui/Display";
+import { useDraggable } from "react-use-draggable-scroll";
 Chart.register(CategoryScale);
 
 export const roundDecimal = (num: number): number => {
@@ -130,8 +131,8 @@ const MarketSummaryBlock: React.FunctionComponent<Coin> = ({
     low_24h,
 }) => {
     return (
-        <>
-            <div className="h-full w-56 sm:w-[18rem] rounded-3xl shrink-0 bg-[rgb(22,22,22)] flex flex-col p-4">
+        <Link to={`/coin/${aliases[id.toLowerCase()]}`}>
+            <div className="h-full w-56 sm:w-[18rem] rounded-3xl shrink-0 bg-[rgb(22,22,22)] hover:bg-[#323232] flex flex-col p-4 cursor-pointer shadow-lg">
                 <div className="h-3/5 w-full">
                     <MarketSummaryChart
                         current_price={current_price}
@@ -186,11 +187,14 @@ const MarketSummaryBlock: React.FunctionComponent<Coin> = ({
                     </div>
                 </div>
             </div>
-        </>
+        </Link>
     );
 };
 
 const MarketSummaryContainer: React.FunctionComponent<{}> = () => {
+    const msContainerRef = useRef<HTMLDivElement | null>(null);
+    const { events } = useDraggable(msContainerRef as MutableRefObject<HTMLDivElement>);
+
     const data = (useContext(AppContext) as MSCProps)?.["data"] as Coin[];
 
     const marketSummaryBlocks: JSX.Element[] | undefined = data
@@ -230,7 +234,11 @@ const MarketSummaryContainer: React.FunctionComponent<{}> = () => {
 
     return (
         <>
-            <div className="container h-36 sm:h-48 flex overflow-auto gap-4 no-scroll">
+            <div
+                className="container h-36 sm:h-48 flex overflow-auto gap-4 no-scroll"
+                ref={msContainerRef}
+                {...events}
+            >
                 {marketSummaryBlocks}
             </div>
         </>
@@ -255,7 +263,7 @@ const CurrencyBlock: React.FunctionComponent<Coin> = ({
     return (
         <>
             <Link to={coinURL}>
-                <div className="w-full h-16 sm:h-12 bg-baseColour hover:opacity-75 rounded-lg grid grid-cols-12 grid-rows-4 auto-cols-min sm:flex items-center px-4 ">
+                <div className="w-full h-16 sm:h-12 bg-baseColour hover:bg-[#323232] rounded-lg grid grid-cols-12 grid-rows-4 auto-cols-min sm:flex items-center px-4 ">
                     <div className="w-fit sm:w-6 h-full flex justify-start items-center row-span-4">
                         <span className="text-stateNeutral text-[.6rem] md:text-xs">
                             {(idx as number) + 1}.
@@ -360,22 +368,16 @@ export const NewsBlock: React.FunctionComponent<NewsArticle> = ({
     let currencyPills: JSX.Element[] | undefined;
 
     if (currencies) {
-<<<<<<< HEAD
         currencyPills = currencies
         .filter(({ code }) => code.indexOf("_") === -1)
         .map(({ code, title }, idx) => {
             return <CurrencyPill text={code} id={title.toLowerCase()} key={idx} />;
         })
-=======
-        currencyPills = currencies?.map(({ code, title }, idx) => {
-            return <CurrencyPill text={code} id={title.toLowerCase()} key={idx} />;
-        });
->>>>>>> af186545fc081c4fc4dacf8355693d6a0be4a412
     }
 
     return (
         <Link to={url} target="_blank">
-            <div className="h-28 sm:h-32 bg-baseColour p-6 rounded-2xl flex flex-col justify-around">
+            <div className="h-28 sm:h-32 bg-baseColour hover:bg-[#323232] p-6 rounded-2xl flex flex-col justify-around">
                 <div>
                     <h1 className="text-[.8rem] sm:text-sm font-bold truncate">
                         {title}

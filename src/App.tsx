@@ -3,8 +3,9 @@ import { useRoutes } from "react-router-dom";
 import { Index } from "./Index";
 import JSONData from "./assets/json/data.json";
 import NewsData from "./assets/json/news.json";
-import { Coin } from "./Coin";
+import { CoinPage } from "./CoinPage";
 import { NavBar } from "./NavBar";
+import { Footer } from "./Footer";
 
 export const BINANCE_BASE_URL = "https://api.binance.com";
 export const CG_BASE_URL = "https://api.coingecko.com/api/v3";
@@ -110,7 +111,7 @@ export const App = (): React.ReactElement | null => {
         },
         {
             path: "/coin/:id",
-            element: <Coin />,
+            element: <CoinPage />,
         },
     ]);
 
@@ -188,6 +189,7 @@ export const App = (): React.ReactElement | null => {
         <AppContext.Provider value={contextStates}>
             <NavBar />
             {routes}
+            <Footer />
         </AppContext.Provider>
     );
 };
