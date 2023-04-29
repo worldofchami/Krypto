@@ -10,8 +10,7 @@ import { Footer } from "./Footer";
 export const BINANCE_BASE_URL = "https://api.binance.com";
 export const CG_BASE_URL = "https://api.coingecko.com/api/v3";
 export const CRYPTO_PANIC_BASE_URL = "https://cryptopanic.com/api/v1";
-export const CRYPTO_PANIC_AUTH_TOKEN =
-    "870f6289e6cd7b8c6524ba2f3f90179445c1373b";
+export const CRYPTO_PANIC_AUTH_TOKEN = "";
 export const COIN_CAP_BASE_URL = "https://api.coincap.io/v2";
 
 const processDescription = (description: string): string => {
