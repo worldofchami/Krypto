@@ -263,35 +263,31 @@ const CurrencyBlock: React.FunctionComponent<Coin> = ({
     return (
         <>
             <Link to={coinURL}>
-                <div className="w-full h-16 sm:h-12 bg-baseColour hover:bg-[#323232] rounded-lg grid grid-cols-12 grid-rows-4 auto-cols-min sm:flex items-center px-4 ">
-                    <div className="w-fit sm:w-6 h-full flex justify-start items-center row-span-4">
+                <div className="w-full h-20 sm:h-12 bg-baseColour hover:bg-[#323232] rounded-lg grid grid-cols-4 grid-rows-1 max-sm:grid-rows-3 px-4">
+                    <div className="h-full flex items-center gap-x-4 col-span-1 max-sm:row-span-2">
                         <span className="text-stateNeutral text-[.6rem] md:text-xs">
                             {(idx as number) + 1}.
                         </span>
-                    </div>
-                    <div className="w-full sm:w-1/12 h-full flex justify-center items-center row-span-4">
                         <img
                             src={image}
                             alt=""
-                            className="w-full sm:h-[70%] object-contain rounded-full"
+                            className="h-[70%] object-contain rounded-full"
                         />
-                    </div>
-                    <div className="sm:hidden col-span-10"></div>
-                    <div className="w-full sm:w-4/12 h-full flex sm:justify-start sm:items-center pl-3 sm:pl-1 col-span-10">
                         <span className="font-bold truncate text-sm min-w-fit sm:w-[80%]">
                             {name}
                         </span>
-                        <span className="hidden sm:block">&nbsp; &nbsp;</span>
-                        <span className="text-[.5rem] md:text-[.6rem] font-black w-[80%] pl-2 sm:pl-0">
+                    </div>
+                    <div className="h-full flex items-center text-center col-span-1 max-sm:col-span-3 max-sm:row-span-2 max-sm:col-start-3 max-sm:text-right">
+                        <span className="text-[.5rem] md:text-[.6rem] font-black w-[80%]">
                             {symbol.toUpperCase()}
                         </span>
                     </div>
-                    <div className="w-full sm:w-4/12 h-full flex items-center col-span-6 pl-3 sm:pl-1">
-                        <span className="pl-0 sm:pl-8 text-left text-stateNeutral text-xs md:text-sm">
+                    <div className="h-full flex items-center col-span-1 max-sm:col-span-2 max-sm:pl-8 max-sm:items-start">
+                        <span className="text-stateNeutral text-sm">
                             ${roundedDecimalAsString(current_price)}
                         </span>
                     </div>
-                    <div className="w-full sm:w-4/12 h-full flex items-center justify-start sm:pl-8 col-span-4">
+                    <div className="w-full flex items-center justify-start col-span-1 max-sm:items-start col-start-4">
                         <span
                             className={`text-${getChangeColour(
                                 price_change_24h

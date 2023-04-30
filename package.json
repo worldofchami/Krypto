@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "chmod +x start.sh && ./start.sh"
   },
   "dependencies": {
     "chart.js": "^4.2.1",
