@@ -57,16 +57,38 @@ const capitaliseStr = (str: string): string => {
     return '';
 };
 
+const processDate = (date: Date): string => {
+    return `${date.getDay()}/${date.getMonth()}/${date.getFullYear()}`;
+};
+
 const CoinGraph: React.FunctionComponent<ICoinProps> = ({ priceData }) => {
     const data = priceData.map((price_collection) =>
         Number(price_collection.price)
     );
+
+    // TODO: Add types to label callback
 
     const chartOptions = {
         plugins: {
             legend: {
                 display: false,
             },
+            tooltip: {
+                boxHeight: 80,
+                boxWidth: 60,
+                mode: ('index' as 'index'),
+                intersection: false,
+                callbacks: {
+                    title: function(tooltipItem: any) {
+                        console.log(tooltipItem)
+                        return "Bitcoin"
+                    },
+                    // afterTitle: () => "19 Jan 2023",
+                    // label: function(context: any) {
+                    //     return `${context.dataset.label.toString()}`;
+                    // },
+                }
+            }
         },
         scales: {
             y: {},

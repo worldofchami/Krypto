@@ -6,6 +6,7 @@ import NewsData from "./assets/json/news.json";
 import { CoinPage } from "./CoinPage";
 import { NavBar } from "./NavBar";
 import { Footer } from "./Footer";
+import { TestChart } from "./TestChart";
 
 export const BINANCE_BASE_URL = "https://api.binance.com";
 export const CG_BASE_URL = "https://api.coingecko.com/api/v3";
@@ -112,6 +113,10 @@ export const App = (): React.ReactElement | null => {
             path: "/coin/:id",
             element: <CoinPage />,
         },
+        {
+            path: "/chart",
+            element: <TestChart />
+        }
     ]);
 
     const [data, setData] = useState<Coin[]>([]);
