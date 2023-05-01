@@ -10,6 +10,7 @@
     "start": "chmod +x start.sh && ./start.sh"
   },
   "dependencies": {
+    "@types/chart.js": "^2.9.37",
     "chart.js": "^4.2.1",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
