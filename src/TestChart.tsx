@@ -23,6 +23,8 @@ const MSChart = () => {
         value: ""
     });
 
+    const [chartMoveEvent, setChartMouseMoveEvent] = useState<React.MouseEvent<HTMLDivElement, MouseEvent> | null>();
+
     /*
     const chartOptions: ChartOptions<"line"> = {
         plugins: {
@@ -60,6 +62,10 @@ const MSChart = () => {
         }
 
         const position = chart.canvas.getBoundingClientRect();
+
+        const { clientX } = (chartMoveEvent as React.MouseEvent<HTMLDivElement, MouseEvent>);
+
+        console.log(clientX)
     };
 
     const chartOptions: ChartOptions<"line"> = {
@@ -101,12 +107,14 @@ const MSChart = () => {
         ],
     }
 
-    return <Line data={chartData} options={chartOptions} />;
-}
-
-interface TTModel {
-    chart: Chart;
-    tooltip: TooltipModel<"line">;
+    return (
+        <div
+            className="w-full h-full"
+            onMouseMove={(e) => setChartMouseMoveEvent(e)}
+        >
+            <Line data={chartData} options={chartOptions} />
+        </div>
+    );
 }
 
 export const TestChart = () => {
