@@ -1,6 +1,7 @@
 import { createContext, Dispatch, SetStateAction, useContext } from "react";
 import { Link } from "react-router-dom";
 import AliasesJSON from '../../aliases.json';
+import { TimePeriod } from "../../CoinPage";
 import SymbolsJSON from '../../symbols.json';
 
 type IndexableObject = { [index: string]: string };
@@ -60,7 +61,7 @@ export const CurrencyPill: React.FunctionComponent<CurrencyProps> = ({ text, id 
 interface DropDownProps {
     text: string;
     selected: boolean;
-    value: string;
+    value: TimePeriod;
 };
 
 export const DropDown: React.FunctionComponent<DropDownProps> = ({ text, selected, value }) => {
@@ -87,14 +88,14 @@ export const DropDown: React.FunctionComponent<DropDownProps> = ({ text, selecte
 };
 
 interface StateModifier {
-    modifier: (period: string) => void;
+    modifier: (period: TimePeriod) => void;
 };
 
 const ModifierContext = createContext<StateModifier | null>(null);
 
 interface DropDownContainerProps {
     children?: React.ReactNode[];
-    modifier: (period: string) => void;
+    modifier: (period: TimePeriod) => void;
     text: string;
 };
 

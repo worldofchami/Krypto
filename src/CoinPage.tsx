@@ -116,6 +116,14 @@ const CoinGraph: React.FunctionComponent<ICoinProps> = ({ priceData }) => {
     return <Line data={chartData} options={chartOptions} />;
 };
 
+const timePeriods = {
+    '1YR': (new Date().valueOf() - 1000 * 60 * 60 * 24 * 365),
+    '1MO': (new Date().valueOf() - 1000 * 60 * 60 * 24 * 30),
+    '1WK': (new Date().valueOf() - 1000 * 60 * 60 * 24 * 7)
+};
+
+export type TimePeriod = keyof typeof timePeriods;
+
 export const CoinPage: React.FunctionComponent<{}> = () => {
     const { id } = useParams();
     // TODO: use AppContext to get coin data so that it accurately reflects.
@@ -125,7 +133,7 @@ export const CoinPage: React.FunctionComponent<{}> = () => {
     const coin: Coin = data.filter((coin) => coin.id == id)[0];
 
 
-    // TODO: find a morex efficient way to do this
+    // TODO: find a more efficient way to do this
     const coinGeckoAliases: string[] = Object.values((aliases as object));
     const coinGeckoAliasEntries: [string, string][] = Object.entries((aliases as object));
 
@@ -135,32 +143,36 @@ export const CoinPage: React.FunctionComponent<{}> = () => {
 
     const [priceData, setPriceData] = useState<CoinPrices[]>([]);
 
+    const [chartPriceData, setChartPriceData] = useState<CoinPrices[]>([]);
+
     const [coinInfo, setCoinInfo] = useState<CoinInfo>();
 
     const [coinNews, setCoinNews] = useState<NewsArticle[]>([]);
     const [newsBlocks, setNewsBlocks] = useState<JSX.Element[]>();
 
-    const [chartPeriod, setChartPeriod] = useState<string>("d1");
+
+    const [chartPeriod, setChartPeriod] = useState<keyof typeof timePeriods>("1YR");
 
     const fetchPriceData = async (): Promise<void> => {
         const response = await fetch(`http://localhost:3000/price/${id}`);
         const data = await response.json();
 
-        setPriceData(
-            data.data.map(({ priceUsd, time, date }: Test) => {
-                return {
-                    price: priceUsd,
-                    time: new Date(time),
-                    date: new Date(date),
-                } as CoinPrices;
-            })
-        );
+        const processedPriceData = data.data.map(({ priceUsd, time, date }: Test) => {
+            return {
+                price: priceUsd,
+                time: new Date(time),
+                date: new Date(date),
+            } as CoinPrices;
+        });
+
+        setPriceData(processedPriceData);
     };
 
     useEffect(() => {
         const fetchCoinData = async (): Promise<void> => {
             const response = await fetch(`http://localhost:3000/coin/${id}`);
             const data = await response.json();
+
             setCoinInfo({
                 name: data.name,
                 description: data.description,
@@ -211,41 +223,50 @@ export const CoinPage: React.FunctionComponent<{}> = () => {
 
     }, []);
 
-    const callbackPriceData = useCallback<(period: string) => void>(
-        (period: string) => {
-            setChartPeriod(period);
-            fetchPriceData();
-        },
-        [chartPeriod]
-    );
+
+    // Only runs when component renders
+    useEffect(() => {
+        setChartPriceData(priceData);
+
+        return () => {};
+    }, [priceData]);
+
+    const modifier = (period: TimePeriod): void => {
+        setChartPeriod(period);
+        setChartPriceData(() => {
+            return priceData.filter(({ date }) => {
+                return date.valueOf() > timePeriods[period]
+            });
+        });
+    };
 
     return (
         <>
             <div className="mb-6">
                 <DropDownContainer
-                    modifier={callbackPriceData}
+                    modifier={modifier}
                     text={chartPeriod}
                 >
                     <DropDown
-                        text="1Y"
-                        value="d1"
-                        selected={chartPeriod === "d1"}
+                        text="1YR"
+                        value="1YR"
+                        selected={chartPeriod === "1YR"}
                     />
                     <DropDown
-                        text="7D"
-                        value="m1"
-                        selected={chartPeriod === "m1"}
+                        text="1MO"
+                        value="1MO"
+                        selected={chartPeriod === "1MO"}
                     />
                     <DropDown
-                        text="12H"
-                        value="h12"
-                        selected={chartPeriod === "h12"}
+                        text="1WK"
+                        value="1WK"
+                        selected={chartPeriod === "1WK"}
                     />
                 </DropDownContainer>
             </div>
             <div className="w-full h-[60vh] flex gap-x-4">
                 <div className="w-3/4 h-fit p-8 bg-[rgb(22,22,22)] rounded-2xl border-neutral-800 border-[2px]">
-                    <CoinGraph priceData={priceData} />
+                    <CoinGraph priceData={chartPriceData} />
                 </div>
                 <div className="w-1/4 h-full bg-[rgb(22,22,22)] rounded-2xl overflow-auto no-scroll flex flex-col gap-y-4 p-2 border-neutral-800 border-[2px]">
                     {newsBlocks}
