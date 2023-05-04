@@ -18,7 +18,7 @@ import {
 import PriceData from "./assets/json/prices.json";
 import BitcoinData from "./assets/json/bitcoin.json";
 import BTCNews from "./assets/json/btcnews.json";
-import { ChartData } from "chart.js";
+import { ChartData, ChartOptions, TooltipItem } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { formatDate, NewsBlock, roundedDecimalAsString } from "./Index";
 import {
@@ -68,25 +68,21 @@ const CoinGraph: React.FunctionComponent<ICoinProps> = ({ priceData }) => {
 
     // TODO: Add types to label callback
 
-    const chartOptions = {
+    const chartOptions: ChartOptions<"line"> = {
         plugins: {
             legend: {
                 display: false,
             },
             tooltip: {
-                boxHeight: 80,
-                boxWidth: 60,
                 mode: ('index' as 'index'),
-                intersection: false,
+                intersect: false,
+                backgroundColor: '#080c08',
+                padding: { left: 10, right: 60, y: 10 },
+                displayColors: false,
                 callbacks: {
-                    title: function(tooltipItem: any) {
-                        console.log(tooltipItem)
-                        return "Bitcoin"
-                    },
-                    // afterTitle: () => "19 Jan 2023",
-                    // label: function(context: any) {
-                    //     return `${context.dataset.label.toString()}`;
-                    // },
+                    title: (tooltipItem: TooltipItem<"line">[]) => "Bitcoin",
+                    footer: (tooltipItem: TooltipItem<"line">[]) => "$" + roundedDecimalAsString(Number(tooltipItem[0].raw)),
+                    label: (tooltipItem: TooltipItem<"line">) => tooltipItem.label,
                 }
             }
         },
@@ -103,9 +99,7 @@ const CoinGraph: React.FunctionComponent<ICoinProps> = ({ priceData }) => {
 
     const labels: string[] = [];
     for (const idx in data) {
-        if (Number(idx) % 20 === 0) {
-            labels.push(formatDate(priceData[idx].date));
-        } else labels.push("");
+        labels.push(formatDate(priceData[idx].date));
     }
 
     const chartData: ChartData<"line"> = {

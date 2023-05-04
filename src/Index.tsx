@@ -235,7 +235,7 @@ const MarketSummaryContainer: React.FunctionComponent<{}> = () => {
     return (
         <>
             <div
-                className="container h-36 sm:h-48 flex overflow-auto gap-4 no-scroll"
+                className="w-full h-36 sm:h-48 flex overflow-auto gap-4 no-scroll"
                 ref={msContainerRef}
                 {...events}
             >

@@ -1,81 +1,27 @@
 import { Line } from "react-chartjs-2";
-import { ChartData } from "chart.js";
+import { ChartData, TooltipLabelStyle } from "chart.js";
 import { ChartOptions } from "chart.js";
-import { useState } from "react";
-import { TooltipModel, Chart } from "chart.js";
-
-interface Tooltip {
-    opacity: number;
-    top: number;
-    left: number;
-    right: number;
-    date: string;
-    value: string;
-}
+import { useEffect, useState } from "react";
+import { TooltipModel, Chart, TooltipItem, PointStyle } from "chart.js";
 
 const MSChart = () => {
-    const [tooltip, setTooltip] = useState<Tooltip>({
-        opacity: 0,
-        top: 0,
-        left: 0,
-        right: 0,
-        date: "",
-        value: ""
-    });
-
-    const [chartMoveEvent, setChartMouseMoveEvent] = useState<React.MouseEvent<HTMLDivElement, MouseEvent> | null>();
-
-    /*
+    ///*
     const chartOptions: ChartOptions<"line"> = {
         plugins: {
             legend: {
                 display: false,
             },
             tooltip: {
-                boxHeight: 100,
-                boxWidth: 100,
                 mode: ('index' as 'index'),
                 intersect: false,
+                backgroundColor: 'blue',
+                padding: { left: 10, right: 60, y: 10 },
                 displayColors: false,
                 callbacks: {
                     title: () => "Bitcoin",
-                    footer: (tooltipItem: any) => "$" + tooltipItem[0].raw,
-                    label: (tooltipItem: any) => tooltipItem.label,
+                    footer: (tooltipItem: TooltipItem<"line">[]) => "$" + tooltipItem[0].raw,
+                    label: (tooltipItem: TooltipItem<"line">) => tooltipItem.label,
                 }
-            }
-        },
-        scales: {
-            y: {},
-            x: {},
-        },
-        elements: {
-            point: {
-                radius: 0,
-            },
-        },
-    };
-    */
-
-    const generateTooltip = (tooltipModel: TooltipModel<"line">, chart: Chart) => {
-        if(tooltipModel.opacity !== 0) {
-            setTooltip((prev) => ({ ...prev, opacity: 0 }));
-        }
-
-        const position = chart.canvas.getBoundingClientRect();
-
-        const { clientX } = (chartMoveEvent as React.MouseEvent<HTMLDivElement, MouseEvent>);
-
-        console.log(clientX)
-    };
-
-    const chartOptions: ChartOptions<"line"> = {
-        plugins: {
-            legend: {
-                display: false,
-            },
-            tooltip: {
-                enabled: false,
-                external: ({ tooltip: tooltipModel, chart }): void => generateTooltip(tooltipModel, chart),
             }
         },
         scales: {
@@ -108,10 +54,7 @@ const MSChart = () => {
     }
 
     return (
-        <div
-            className="w-full h-full"
-            onMouseMove={(e) => setChartMouseMoveEvent(e)}
-        >
+        <div className="w-full h-full">
             <Line data={chartData} options={chartOptions} />
         </div>
     );

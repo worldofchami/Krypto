@@ -13,11 +13,17 @@
     }
 
     html {
-        @apply bg-baseColour text-txt;
+        @apply bg-[#080c08] text-txt;
     }
 
     body {
-        @apply px-6 md:px-12 lg:px-24;
+        @apply px-4 md:px-8 lg:px-12 bg-[#080c08];
+        background: radial-gradient(50% 123.47% at 50% 50%, #161616 0%, #090d09 100%),
+            linear-gradient(121.28deg, #000000 0%, #000000 100%),
+            linear-gradient(360deg, #000000 0%, #10101c 100%),
+            linear-gradient(114.9deg, #000000 0%, #000000 100%),
+            radial-gradient(100% 148.07% at 0% 0%, #000000 0%, #000000 100%);
+        background-blend-mode: screen, color-dodge, overlay, difference, normal;
     }
 
     .no-scroll::-webkit-scrollbar {
@@ -28,12 +34,13 @@
         background-color: transparent;
     }
 
-    ::marker, ::-webkit-details-marker {
+    ::marker,
+    ::-webkit-details-marker {
         display: none !important;
     }
-    
+
     summary {
         display: flex;
     }
-    
+
 }
