@@ -73,7 +73,7 @@ export const DropDown: React.FunctionComponent<DropDownProps> = ({ text, selecte
     return (
         <>
             <div
-                className={`w-[3rem] h-fit p-1 rounded-full bg-${bgColour} hover:bg-highlight hover:text-baseColour`}
+                className={`w-16 h-fit py-1 px-2 flex items-center justify-between rounded-full bg-${bgColour} hover:bg-highlight hover:text-baseColour`}
                 onClick={({ currentTarget }) => {
                     if(!selected) {
                         modifier(value);
@@ -81,6 +81,7 @@ export const DropDown: React.FunctionComponent<DropDownProps> = ({ text, selecte
                     }
                 }}
             >
+                <img src={`/public/${selected ? 'arrowDownBase.svg' : 'arrowDownHgt.svg'}`} className="h-2 mr-1" />
                 <h1 className={`text-${textColour} text-xs font-bold text-right`}>{text.toUpperCase()}</h1>
             </div>
         </>
@@ -107,11 +108,12 @@ export const DropDownContainer: React.FunctionComponent<DropDownContainerProps> 
     return (
         <ModifierContext.Provider value={{ modifier }}>
             <div className="cursor-pointer">
-                <details className="w-fit h-max">
-                    <summary className="w-[3rem] h-fit p-1 rounded-full bg-highlight text-baseColour justify-end">
+                <details className="w-16 h-max bg-[#080c08] rounded-sm">
+                    <summary className="w-16 h-fit py-1 px-2 rounded-full bg-highlight text-baseColour items-center justify-between">
+                        <img src="/public/arrowDownBase.svg" className="h-2 mr-1" />
                         <h1 className="text-baseColour text-xs font-bold text-right">{text.toUpperCase()}</h1>
                     </summary>
-                    <div className="absolute">
+                    <div className="absolute bg-[#080c08] rounded-sm">
                         {children}
                     </div>
                 </details>

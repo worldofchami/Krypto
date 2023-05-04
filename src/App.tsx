@@ -85,6 +85,7 @@ export interface Coin {
 
 export interface ICoinProps {
     priceData: CoinPrices[];
+    name: string | undefined;
 }
 
 export interface NewsArticle {

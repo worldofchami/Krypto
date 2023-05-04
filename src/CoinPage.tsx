@@ -61,7 +61,7 @@ const processDate = (date: Date): string => {
     return `${date.getDay()}/${date.getMonth()}/${date.getFullYear()}`;
 };
 
-const CoinGraph: React.FunctionComponent<ICoinProps> = ({ priceData }) => {
+const CoinGraph: React.FunctionComponent<ICoinProps> = ({ priceData, name }) => {
     const data = priceData.map((price_collection) =>
         Number(price_collection.price)
     );
@@ -80,7 +80,7 @@ const CoinGraph: React.FunctionComponent<ICoinProps> = ({ priceData }) => {
                 padding: { left: 10, right: 60, y: 10 },
                 displayColors: false,
                 callbacks: {
-                    title: (tooltipItem: TooltipItem<"line">[]) => "Bitcoin",
+                    title: (tooltipItem: TooltipItem<"line">[]) => name,
                     footer: (tooltipItem: TooltipItem<"line">[]) => "$" + roundedDecimalAsString(Number(tooltipItem[0].raw)),
                     label: (tooltipItem: TooltipItem<"line">) => tooltipItem.label,
                 }
@@ -266,7 +266,7 @@ export const CoinPage: React.FunctionComponent<{}> = () => {
             </div>
             <div className="w-full h-[60vh] flex gap-x-4">
                 <div className="w-3/4 h-fit p-8 bg-[rgb(22,22,22)] rounded-2xl border-neutral-800 border-[2px]">
-                    <CoinGraph priceData={chartPriceData} />
+                    <CoinGraph priceData={chartPriceData} name={coinInfo?.name} />
                 </div>
                 <div className="w-1/4 h-full bg-[rgb(22,22,22)] rounded-2xl overflow-auto no-scroll flex flex-col gap-y-4 p-2 border-neutral-800 border-[2px]">
                     {newsBlocks}
