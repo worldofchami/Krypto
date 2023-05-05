@@ -13,17 +13,31 @@
     }
 
     html {
-        @apply bg-[#080c08] text-txt;
+        @apply bg-[#121b1b] text-txt;
     }
 
     body {
         @apply px-4 md:px-8 lg:px-12 bg-[#080c08];
-        background: radial-gradient(50% 123.47% at 50% 50%, #161616 0%, #090d09 100%),
-            linear-gradient(121.28deg, #000000 0%, #000000 100%),
+        background: radial-gradient(50% 123.47% at 50% 50%, #161616 0%, #0b100b 100%),
+            linear-gradient(121.28deg, #000000 0%, #5f8468 100%),
             linear-gradient(360deg, #000000 0%, #10101c 100%),
-            linear-gradient(114.9deg, #000000 0%, #000000 100%),
-            radial-gradient(100% 148.07% at 0% 0%, #000000 0%, #000000 100%);
+            linear-gradient(114.9deg, #0e190d 0%, #0a1914 100%),
+            radial-gradient(100% 148.07% at 0% 0%, #194834 0%, #3a594e 100%);
         background-blend-mode: screen, color-dodge, overlay, difference, normal;
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite forwards;
+    }
+
+    @keyframes gradient {
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
     }
 
     .no-scroll::-webkit-scrollbar {
