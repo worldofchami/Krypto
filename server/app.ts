@@ -176,7 +176,7 @@ let id: string = "";
 
 const fetchPriceData = async (id: string): Promise<void> => {
     const response = await fetch(
-        `${COIN_CAP_BASE_URL}/assets/${id}/history?interval=${'d1'}`
+        `${COIN_CAP_BASE_URL}/assets/${id}/history?interval=d1`
     );
     const data = await response.json();
 
@@ -233,6 +233,30 @@ app.get('/news', async (req, res) => {
 app.get('/coin/:id', async (req, res) => {
     await getData1D(req.params.id);
     res.json(CoinData);
+})
+
+let SpecificNews: NewsArticle[];
+
+const getSpecificNews = async (symbol: string): Promise<void> => {
+    const response = await fetch(
+        `${CRYPTO_PANIC_BASE_URL}/posts/?auth_token=${CRYPTO_PANIC_AUTH_TOKEN}&currencies=${symbol}`
+    );
+    const data = await response.json();
+
+    SpecificNews = data?.results?.map(({ title, kind, source, url, created_at }: NewsArticle) => {
+        return {
+            title,
+            kind,
+            source,
+            url,
+            created_at
+        } as NewsArticle;
+    });
+};
+
+app.get('/news/:id', async (req, res) => {
+    await getSpecificNews(req.params.id);
+    res.json(SpecificNews);
 })
 
 const getData5S = async(): Promise<void> => {

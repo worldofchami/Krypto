@@ -15,6 +15,7 @@ import {
     MSCProps,
     NBProps,
     NewsArticle,
+    RTUpdate,
 } from "./App";
 import {
     aliases,
@@ -128,8 +129,9 @@ const MarketSummaryBlock: React.FunctionComponent<Coin> = ({
     current_price,
     price_change_24h,
     high_24h,
-    low_24h,
+    low_24h
 }) => {
+
     return (
         <Link to={`/coin/${aliases[id.toLowerCase()]}`}>
             <div className="h-full w-56 sm:w-[18rem] rounded-3xl shrink-0 bg-[rgb(22,22,22)] hover:bg-[#323232] flex flex-col p-4 cursor-pointer shadow-lg">
@@ -195,7 +197,10 @@ const MarketSummaryContainer: React.FunctionComponent<{}> = () => {
     const msContainerRef = useRef<HTMLDivElement | null>(null);
     const { events } = useDraggable(msContainerRef as MutableRefObject<HTMLDivElement>);
 
-    const data = (useContext(AppContext) as MSCProps)?.["data"] as Coin[];
+    const data: Coin[] = (useContext(AppContext) as MSCProps)?.["data"] as Coin[];
+
+    const rtUpdate = (useContext(AppContext));
+
 
     const marketSummaryBlocks: JSX.Element[] | undefined = data
         ?.filter((coin, index) => index < 7)

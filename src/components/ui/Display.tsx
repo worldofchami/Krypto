@@ -1,4 +1,4 @@
-import { createContext, Dispatch, SetStateAction, useContext } from "react";
+import { createContext, Dispatch, SetStateAction, useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import AliasesJSON from '../../aliases.json';
 import { TimePeriod } from "../../CoinPage";
@@ -68,6 +68,8 @@ export const DropDown: React.FunctionComponent<DropDownProps> = ({ text, selecte
     const bgColour = selected ? 'highlight' : 'baseColour';
     const textColour = selected ? 'baseColour' : 'txt';
 
+    const [stateSelected, setStateSelected] = useState<boolean>(selected);
+
     const modifier = (useContext(ModifierContext) as StateModifier).modifier;
 
     return (
@@ -80,8 +82,10 @@ export const DropDown: React.FunctionComponent<DropDownProps> = ({ text, selecte
                         ((currentTarget.parentElement as HTMLElement).parentElement as HTMLElement).toggleAttribute('open')
                     }
                 }}
+                onMouseOver={() => setStateSelected(true)}
+                onMouseLeave={() => {if(!selected) setStateSelected(false)}}
             >
-                <img src={`/public/${selected ? 'arrowDownBase.svg' : 'arrowDownHgt.svg'}`} className="h-2 mr-1" />
+                <img src={`/public/${stateSelected ? 'arrowDownBase.svg' : 'arrowDownHgt.svg'}`} className="h-2 mr-1" />
                 <h1 className={`text-${textColour} text-xs font-bold text-right`}>{text.toUpperCase()}</h1>
             </div>
         </>

@@ -7,6 +7,7 @@ import { CoinPage } from "./CoinPage";
 import { NavBar } from "./NavBar";
 import { Footer } from "./Footer";
 import { TestChart } from "./TestChart";
+import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 
 export const BINANCE_BASE_URL = "https://api.binance.com";
 export const CG_BASE_URL = "https://api.coingecko.com/api/v3";
@@ -36,6 +37,11 @@ export interface MSCProps {
 
 export interface NBProps {
     newsData: NewsArticle[];
+}
+
+export interface RTUpdate {
+    currency: string;
+    price: number;
 }
 
 export interface MSChartProps {
@@ -69,7 +75,7 @@ export interface Test {
     date: string;
 }
 
-export const AppContext = createContext<MSCProps | NBProps | null>(null);
+export const AppContext = createContext<MSCProps | NBProps | RTUpdate | null>(null);
 
 export interface Coin {
     id: string;
@@ -120,15 +126,37 @@ export const App = (): React.ReactElement | null => {
         }
     ]);
 
+    const socketUrl = `wss://ws.coincap.io/prices?assets=bitcoin,ethereum`;
+
+    const [lastRTUpdate, setLastRTUpdate] = useState<RTUpdate | null>(null);
+
+    
+
     const [data, setData] = useState<Coin[]>([]);
     const [newsData, setNewsData] = useState<NewsArticle[]>([]);
 
     const contextStates = {
         data,
         newsData,
+        lastRTUpdate,
     };
 
     useEffect(() => {
+        const ws = new WebSocket(socketUrl);
+
+        ws.onopen = (event) => {
+            console.log(event)
+        };
+    
+        ws.onmessage = (event) => {
+            console.log(event)
+            const data = JSON.parse(event.data);
+            const currency = Object.keys(data)[0];
+            const price = Number(Object.values(data)[0]);
+        
+            setLastRTUpdate({ currency, price });
+        };
+
         //Get BTC price
         const getBinance = async (): Promise<void> => {
             const response = await fetch(

@@ -130,7 +130,7 @@ export const CoinPage: React.FunctionComponent<{}> = () => {
     // map over array and use matching Coin object info
     const data = (useContext(AppContext) as MSCProps)?.["data"] as Coin[];
     
-    const coin: Coin = data.filter((coin) => coin.id == id)[0];
+    const coin: Coin = data?.filter((coin) => coin.id == id)[0];
 
 
     // TODO: find a more efficient way to do this
@@ -187,34 +187,16 @@ export const CoinPage: React.FunctionComponent<{}> = () => {
         };
 
         const fetchNewsData = async (): Promise<void> => {
-            const symbol = symbols[(id as string).toLowerCase()];
-            const response = await fetch(
-                `${CRYPTO_PANIC_BASE_URL}/posts/?auth_token=${CRYPTO_PANIC_AUTH_TOKEN}&currencies=${symbol}`
-            );
-            const data = await response.json();
-
-            const coinNews = data?.results?.map(({ title, kind, source, url, created_at }: NewsArticle) => {
-                return {
-                    title,
-                    kind,
-                    source,
-                    url,
-                    created_at
-                } as NewsArticle;
-            });
+            const symbol = symbols[(id as string)].toLowerCase();
             
-            setNewsBlocks(coinNews?.map(({ title, kind, source, url, created_at }: NewsArticle) => {
+            const response = await fetch(`http://localhost:3000/news/${symbol}`);
+            const data: NewsArticle[] = await response.json();
+            
+            setNewsBlocks(data.map((article: NewsArticle) => {
                 return (
-                    <NewsBlock
-                        kind={kind}
-                        title={title}
-                        source={source}
-                        url={url}
-                        created_at={created_at}
-                    />
-                );
-            }))
-
+                    <NewsBlock {...article} />
+                )
+            }));
         };
 
         fetchPriceData();
@@ -264,7 +246,7 @@ export const CoinPage: React.FunctionComponent<{}> = () => {
                     />
                 </DropDownContainer>
             </div>
-            <div className="w-full h-[60vh] flex gap-x-4">
+            <div className="w-full h-[70vh] flex gap-x-4">
                 <div className="w-3/4 h-fit p-8 bg-[rgb(22,22,22)] rounded-2xl border-neutral-800 border-[2px]">
                     <CoinGraph priceData={chartPriceData} name={coinInfo?.name} />
                 </div>
@@ -280,7 +262,7 @@ export const CoinPage: React.FunctionComponent<{}> = () => {
                     <h1 className="text-md font-heading">{coinInfo?.symbol?.toUpperCase()}</h1>
                 </div>
                 <div className="flex flex-col gap-y-6">
-                    <h1 className="text-3xl">${roundedDecimalAsString(coin.current_price)}</h1>
+                    <h1 className="text-3xl">${coin && roundedDecimalAsString(coin?.current_price)}</h1>
                     <p>{coinInfo?.description}</p>
                 </div>
             </div>
