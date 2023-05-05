@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "@types/chart.js": "^2.9.37",
+    "@types/cors": "^2.8.13",
     "chart.js": "^4.2.1",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "nodemon": "^2.0.22",

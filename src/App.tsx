@@ -44,6 +44,10 @@ export interface RTUpdate {
     price: number;
 }
 
+export interface RTData {
+    update: RTUpdate;
+}
+
 export interface MSChartProps {
     current_price: number;
     high_24h: number;
@@ -75,7 +79,7 @@ export interface Test {
     date: string;
 }
 
-export const AppContext = createContext<MSCProps | NBProps | RTUpdate | null>(null);
+export const AppContext = createContext<MSCProps | NBProps | RTData | null>(null);
 
 export interface Coin {
     id: string;
@@ -128,9 +132,7 @@ export const App = (): React.ReactElement | null => {
 
     const socketUrl = `wss://ws.coincap.io/prices?assets=bitcoin,ethereum`;
 
-    const [lastRTUpdate, setLastRTUpdate] = useState<RTUpdate | null>(null);
-
-    
+    const [update, setUpdate] = useState<RTUpdate>({ currency: '', price: 0 });
 
     const [data, setData] = useState<Coin[]>([]);
     const [newsData, setNewsData] = useState<NewsArticle[]>([]);
@@ -138,7 +140,7 @@ export const App = (): React.ReactElement | null => {
     const contextStates = {
         data,
         newsData,
-        lastRTUpdate,
+        update,
     };
 
     useEffect(() => {
@@ -149,12 +151,11 @@ export const App = (): React.ReactElement | null => {
         };
     
         ws.onmessage = (event) => {
-            console.log(event)
             const data = JSON.parse(event.data);
             const currency = Object.keys(data)[0];
             const price = Number(Object.values(data)[0]);
         
-            setLastRTUpdate({ currency, price });
+            setUpdate({ currency, price });
         };
 
         //Get BTC price

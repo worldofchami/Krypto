@@ -15,6 +15,7 @@ import {
     MSCProps,
     NBProps,
     NewsArticle,
+    RTData,
     RTUpdate,
 } from "./App";
 import {
@@ -134,7 +135,11 @@ const MarketSummaryBlock: React.FunctionComponent<Coin> = ({
 
     return (
         <Link to={`/coin/${aliases[id.toLowerCase()]}`}>
-            <div className="h-full w-56 sm:w-[18rem] rounded-3xl shrink-0 bg-[rgb(22,22,22)] hover:bg-[#323232] flex flex-col p-4 cursor-pointer shadow-lg">
+            <div
+                className="h-full w-56 sm:w-[18rem] rounded-3xl shrink-0 bg-[rgb(22,22,22)] hover:bg-[#323232] flex flex-col p-4 cursor-pointer shadow-lg"
+                draggable={false}
+                onDragStart={() => false} 
+            >
                 <div className="h-3/5 w-full">
                     <MarketSummaryChart
                         current_price={current_price}
@@ -199,8 +204,13 @@ const MarketSummaryContainer: React.FunctionComponent<{}> = () => {
 
     const data: Coin[] = (useContext(AppContext) as MSCProps)?.["data"] as Coin[];
 
-    const rtUpdate = (useContext(AppContext));
+    const { currency, price } = (useContext(AppContext) as RTData)?.["update"];
 
+    const [currentPrice, setCurrentPrice] = useState<number>(price);
+
+    useEffect(() => {
+        setCurrentPrice(price);
+    }, [currency, price])
 
     const marketSummaryBlocks: JSX.Element[] | undefined = data
         ?.filter((coin, index) => index < 7)
@@ -224,7 +234,12 @@ const MarketSummaryContainer: React.FunctionComponent<{}> = () => {
                         name={name}
                         symbol={symbol}
                         image={image}
-                        current_price={roundDecimal(current_price)}
+                        current_price={
+                            roundDecimal(
+                                name.toLowerCase() === currency.toLowerCase() ?
+                                price : current_price
+                            )
+                        }
                         price_change_24h={roundDecimal(
                             price_change_24h / current_price
                         )}
@@ -264,7 +279,7 @@ const CurrencyBlock: React.FunctionComponent<Coin> = ({
         coinAlias === 'NONE' ?
         '' :
         `/coin/${coinAlias}`;
-
+        
     return (
         <>
             <Link to={coinURL}>

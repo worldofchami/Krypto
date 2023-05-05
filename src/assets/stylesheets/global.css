@@ -40,8 +40,12 @@
         }
     }
 
+    .no-scroll {
+        scrollbar-width: none !important;
+    }
+
     .no-scroll::-webkit-scrollbar {
-        display: none;
+        display: none !important;
     }
 
     canvas {
