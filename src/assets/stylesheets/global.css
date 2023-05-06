@@ -61,4 +61,33 @@
         display: flex;
     }
 
+    .red_flicker {
+        animation: animate_red_flicker 1s linear forwards;
+        animation-iteration-count: 1;
+    }
+
+    .green_flicker {
+        animation: animate_green_flicker 1s linear forwards;
+        animation-iteration-count: 1;
+    }
+
+    @keyframes animate_red_flicker {
+        0% {
+            color: red;
+        }
+
+        100% {
+            color: white;
+        }
+    }
+
+    @keyframes animate_green_flicker {
+        0% {
+            color: green;
+        }
+
+        100% {
+            color: white;
+        }
+    }
 }

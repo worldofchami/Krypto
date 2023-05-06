@@ -91,6 +91,7 @@ export interface Coin {
     high_24h?: number;
     low_24h?: number;
     idx?: number;
+    colour?: "red" | "green";
 }
 
 export interface ICoinProps {

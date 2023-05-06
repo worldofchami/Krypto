@@ -130,7 +130,8 @@ const MarketSummaryBlock: React.FunctionComponent<Coin> = ({
     current_price,
     price_change_24h,
     high_24h,
-    low_24h
+    low_24h,
+    colour
 }) => {
 
     return (
@@ -188,7 +189,7 @@ const MarketSummaryBlock: React.FunctionComponent<Coin> = ({
                         </span>
                     </div>
                     <div className="w-2/6 h-full flex">
-                        <span className="text-stateNeutral text-xs sm:text-base">
+                        <span className={`text-stateNeutral text-xs sm:text-base ${colour}_flicker`}>
                             ${current_price}
                         </span>
                     </div>
@@ -207,9 +208,15 @@ const MarketSummaryContainer: React.FunctionComponent<{}> = () => {
     const { currency, price } = (useContext(AppContext) as RTData)?.["update"];
 
     const [currentPrice, setCurrentPrice] = useState<number>(price);
+    const [priceChangeColour, setPriceChangeColour] = useState<"green" | "red">("green");
 
     useEffect(() => {
-        setCurrentPrice(price);
+        setCurrentPrice((prev) => {
+            if(prev > price) setPriceChangeColour("red")
+            else setPriceChangeColour("green")
+
+            return price
+        });
     }, [currency, price])
 
     const marketSummaryBlocks: JSX.Element[] | undefined = data
@@ -246,6 +253,7 @@ const MarketSummaryContainer: React.FunctionComponent<{}> = () => {
                         high_24h={high_24h}
                         low_24h={low_24h}
                         idx={idx}
+                        colour={priceChangeColour}
                         key={idx}
                     />
                 );
@@ -279,6 +287,7 @@ const CurrencyBlock: React.FunctionComponent<Coin> = ({
         coinAlias === 'NONE' ?
         '' :
         `/coin/${coinAlias}`;
+
         
     return (
         <>
