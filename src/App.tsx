@@ -131,8 +131,6 @@ export const App = (): React.ReactElement | null => {
         }
     ]);
 
-    const socketUrl = `wss://ws.coincap.io/prices?assets=bitcoin,ethereum`;
-
     const [update, setUpdate] = useState<RTUpdate>({ currency: '', price: 0 });
 
     const [data, setData] = useState<Coin[]>([]);
@@ -143,6 +141,8 @@ export const App = (): React.ReactElement | null => {
         newsData,
         update,
     };
+
+    const [socketUrl, setSocketUrl] = useState<string>(`wss://ws.coincap.io/prices?assets=bitcoin,ethereum`);
 
     useEffect(() => {
         const ws = new WebSocket(socketUrl);
@@ -174,6 +174,15 @@ export const App = (): React.ReactElement | null => {
             const response = await fetch('http://localhost:3000/coingecko');
 
             const data = await response.json();
+
+            const coinNames: string[] = data.map(({ name }: Coin, idx: number) => {
+                if(idx < 10) return name;
+            });
+        
+            // Removes null values
+            coinNames.filter((name) => name);
+
+            setSocketUrl(`wss://ws.coincap.io/prices?assets=${coinNames.join(',')}`);
 
             setData(
                 data.map(

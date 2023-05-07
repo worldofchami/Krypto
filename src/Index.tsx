@@ -189,7 +189,7 @@ const MarketSummaryBlock: React.FunctionComponent<Coin> = ({
                         </span>
                     </div>
                     <div className="w-2/6 h-full flex">
-                        <span className={`text-stateNeutral text-xs sm:text-base ${colour}_flicker`}>
+                        <span className={`text-xs sm:text-base ${colour}_flicker`}>
                             ${current_price}
                         </span>
                     </div>
@@ -253,7 +253,10 @@ const MarketSummaryContainer: React.FunctionComponent<{}> = () => {
                         high_24h={high_24h}
                         low_24h={low_24h}
                         idx={idx}
-                        colour={priceChangeColour}
+                        colour={
+                            name.toLowerCase() === currency.toLowerCase() ?
+                            priceChangeColour : undefined
+                        }
                         key={idx}
                     />
                 );

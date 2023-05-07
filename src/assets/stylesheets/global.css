@@ -7,6 +7,16 @@
     src: url('../fonts/HelveticaNeue93BlExt.ttf') format('truetype');
 }
 
+.red_flicker {
+    animation: animate_red_flicker 1s linear forwards;
+    animation-iteration-count: 1;
+}
+
+.green_flicker {
+    animation: animate_green_flicker 1s linear forwards;
+    animation-iteration-count: 1;
+}
+
 @layer base {
     :root {
         color-scheme: dark;
@@ -61,19 +71,9 @@
         display: flex;
     }
 
-    .red_flicker {
-        animation: animate_red_flicker 1s linear forwards;
-        animation-iteration-count: 1;
-    }
-
-    .green_flicker {
-        animation: animate_green_flicker 1s linear forwards;
-        animation-iteration-count: 1;
-    }
-
     @keyframes animate_red_flicker {
         0% {
-            color: red;
+            color: #fe1b30;
         }
 
         100% {
@@ -83,7 +83,7 @@
 
     @keyframes animate_green_flicker {
         0% {
-            color: green;
+            color: #00ff90;
         }
 
         100% {
