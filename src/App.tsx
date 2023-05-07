@@ -8,6 +8,9 @@ import { NavBar } from "./NavBar";
 import { Footer } from "./Footer";
 import { TestChart } from "./TestChart";
 import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
+import { Coins } from "./Coins";
+import { Coin, MSCProps, NBProps, NewsArticle, RTData, RTUpdate } from "./interfaces/interfaces";
+import { ScrollResetter } from "./ScrollResetter";
 
 export const BINANCE_BASE_URL = "https://api.binance.com";
 export const CG_BASE_URL = "https://api.coingecko.com/api/v3";
@@ -31,89 +34,7 @@ const processDescription = (description: string): string => {
     } else return "";
 };
 
-export interface MSCProps {
-    data: Coin[];
-}
-
-export interface NBProps {
-    newsData: NewsArticle[];
-}
-
-export interface RTUpdate {
-    currency: string;
-    price: number;
-}
-
-export interface RTData {
-    update: RTUpdate;
-}
-
-export interface MSChartProps {
-    current_price: number;
-    high_24h: number;
-    low_24h: number;
-    price_change_24h: number;
-}
-
-export interface CoinInfo {
-    name: string;
-    description: string;
-    upvotes: number;
-    categories: string[];
-    genesisDate: Date;
-    image: string;
-    symbol: string;
-    page: string;
-    rank: number;
-}
-
-export interface CoinPrices {
-    price: string;
-    time: Date;
-    date: Date;
-}
-
-export interface Test {
-    priceUsd: string;
-    time: string;
-    date: string;
-}
-
 export const AppContext = createContext<MSCProps | NBProps | RTData | null>(null);
-
-export interface Coin {
-    id: string;
-    name: string;
-    symbol: string;
-    image: string;
-    current_price: number;
-    price_change_24h: number;
-    high_24h?: number;
-    low_24h?: number;
-    idx?: number;
-    colour?: "red" | "green";
-}
-
-export interface ICoinProps {
-    priceData: CoinPrices[];
-    name: string | undefined;
-}
-
-export interface NewsArticle {
-    kind: "news" | "media";
-    source: {
-        title: string;
-    };
-    title: string;
-    url: string;
-    currencies?: [
-        {
-            code: string;
-            title: string;
-        }
-    ];
-    created_at: string;
-}
 
 export const App = (): React.ReactElement | null => {
     const routes: React.ReactElement | null = useRoutes([
@@ -126,9 +47,9 @@ export const App = (): React.ReactElement | null => {
             element: <CoinPage />,
         },
         {
-            path: "/chart",
-            element: <TestChart />
-        }
+            path: "/coins",
+            element: <Coins />,
+        },
     ]);
 
     const [update, setUpdate] = useState<RTUpdate>({ currency: '', price: 0 });
@@ -231,6 +152,7 @@ export const App = (): React.ReactElement | null => {
 
     return (
         <AppContext.Provider value={contextStates}>
+            <ScrollResetter />
             <NavBar />
             {routes}
             <Footer />

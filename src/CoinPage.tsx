@@ -1,21 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { aliases, symbols } from "./components/ui/Display";
-import {
-    AppContext,
-    CG_BASE_URL,
-    Coin,
-    CoinInfo,
-    CoinPrices,
-    COIN_CAP_BASE_URL,
-    CRYPTO_PANIC_AUTH_TOKEN,
-    CRYPTO_PANIC_BASE_URL,
-    ICoinProps,
-    MSCProps,
-    NewsArticle,
-    RTData,
-    Test,
-} from "./App";
+import { AppContext } from "./App";
 import PriceData from "./assets/json/prices.json";
 import BitcoinData from "./assets/json/bitcoin.json";
 import BTCNews from "./assets/json/btcnews.json";
@@ -27,6 +13,7 @@ import {
     DropDownContainer,
     SectionHeading,
 } from "./components/ui/Display";
+import { Coin, CoinInfo, CoinPrices, ICoinProps, MSCProps, NewsArticle, RTData, Test } from "./interfaces/interfaces";
 
 const processDescription = (description: string): string => {
     if (description !== undefined) {
@@ -175,6 +162,7 @@ export const CoinPage: React.FunctionComponent<{}> = () => {
         const response = await fetch(`http://localhost:3000/price/${id}`);
         const data = await response.json();
 
+        //TODO: change from Test interface
         const processedPriceData = data.data.map(({ priceUsd, time, date }: Test) => {
             return {
                 price: priceUsd,
@@ -239,7 +227,7 @@ export const CoinPage: React.FunctionComponent<{}> = () => {
             });
         });
     };
-    
+
     return (
         <>
             <div className="mb-6">

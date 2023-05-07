@@ -15,16 +15,7 @@ import {
     ChartTypeRegistry,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import {
-    AppContext,
-    Coin,
-    MSChartProps,
-    MSCProps,
-    NBProps,
-    NewsArticle,
-    RTData,
-    RTUpdate,
-} from "./App";
+import { AppContext } from "./App";
 import {
     aliases,
     CurrencyPill,
@@ -32,6 +23,7 @@ import {
     SectionHeading,
 } from "./components/ui/Display";
 import { useDraggable } from "react-use-draggable-scroll";
+import { CBCProps, Coin, MSChartProps, MSCProps, NBProps, NewsArticle, RTData } from "./interfaces/interfaces";
 Chart.register(CategoryScale);
 
 export const roundDecimal = (num: number): number => {
@@ -360,8 +352,7 @@ const CurrencyBlock: React.FunctionComponent<Coin> = ({
     );
 };
 
-const CurrencyBlockContainer: React.FunctionComponent<{}> = () => {
-    const [blockCount, setBlockCount] = useState<number>(10);
+export const CurrencyBlockContainer: React.FunctionComponent<CBCProps> = ({ limit }) => {
     const data = (useContext(AppContext) as MSCProps)?.["data"] as Coin[];
 
     const { currency, price } = (useContext(AppContext) as RTData)?.["update"];
@@ -381,7 +372,7 @@ const CurrencyBlockContainer: React.FunctionComponent<{}> = () => {
     }, [currency, price]);
 
     const currencyBlocks: JSX.Element[] | undefined = data
-        ?.filter((coin, index) => index < blockCount)
+        ?.filter((coin, index) => index < limit)
         ?.map(
             (
                 { id, name, symbol, image, current_price, price_change_24h },
@@ -511,8 +502,15 @@ export const Index: React.FunctionComponent<{}> = () => {
             <MarketSummaryContainer />
             <div className="flex flex-col h-fit gap-x-4">
                 <div className="w-full h-fit overflow-hidden">
-                    <SectionHeading text="Cryptocurrencies" primary={false} />
-                    <CurrencyBlockContainer />
+                    <SectionHeading text="Top Cryptocurrencies" primary={false} />
+                    <CurrencyBlockContainer
+                        limit={10}
+                    />
+                    <Link to="/coins">
+                        <div className="w-12 h-12 flex justify-center items-center rounded-full bg-[rgb(22,22,22)] hover:bg-baseColour mx-auto mt-2">
+                            <img src="/public/arrowDownHgt.svg" className="w-4 object-contain" />
+                        </div>
+                    </Link>
                 </div>
                 <div className="w-full h-fit overflow-hidden">
                     <SectionHeading text="Headlines" primary={false} />
