@@ -13,6 +13,7 @@ import {
     ICoinProps,
     MSCProps,
     NewsArticle,
+    RTData,
     Test,
 } from "./App";
 import PriceData from "./assets/json/prices.json";
@@ -132,6 +133,24 @@ export const CoinPage: React.FunctionComponent<{}> = () => {
     
     const coin: Coin = data?.filter((coin) => coin.id == id)[0];
 
+    const { currency, price } = (useContext(AppContext) as RTData)?.["update"];
+
+    const [currentPrice, setCurrentPrice] = useState<number>(price);
+    const [priceChangeColour, setPriceChangeColour] = useState<"green" | "red">(
+        "green"
+    );
+
+    useEffect(() => {
+        if(currency.toLowerCase() === coinInfo?.name.toLowerCase()) {
+            setCurrentPrice((prev) => {
+                if (prev > price) setPriceChangeColour("red");
+                else setPriceChangeColour("green");
+    
+                return price;
+            });
+        }
+    }, [currency, price]);
+
 
     // TODO: find a more efficient way to do this
     const coinGeckoAliases: string[] = Object.values((aliases as object));
@@ -149,7 +168,6 @@ export const CoinPage: React.FunctionComponent<{}> = () => {
 
     const [coinNews, setCoinNews] = useState<NewsArticle[]>([]);
     const [newsBlocks, setNewsBlocks] = useState<JSX.Element[]>();
-
 
     const [chartPeriod, setChartPeriod] = useState<keyof typeof timePeriods>("1YR");
 
@@ -221,7 +239,7 @@ export const CoinPage: React.FunctionComponent<{}> = () => {
             });
         });
     };
-
+    
     return (
         <>
             <div className="mb-6">
@@ -262,7 +280,9 @@ export const CoinPage: React.FunctionComponent<{}> = () => {
                     <h1 className="text-md font-heading">{coinInfo?.symbol?.toUpperCase()}</h1>
                 </div>
                 <div className="flex flex-col gap-y-6">
-                    <h1 className="text-3xl">${coin && roundedDecimalAsString(coin?.current_price)}</h1>
+                    <h1 className={`text-3xl ${priceChangeColour}_flicker`}>
+                        ${coin && roundedDecimalAsString(currentPrice ? currentPrice : coin?.current_price)}
+                    </h1>
                     <p>{coinInfo?.description}</p>
                 </div>
             </div>

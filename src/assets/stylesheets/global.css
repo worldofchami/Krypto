@@ -8,12 +8,12 @@
 }
 
 .red_flicker {
-    animation: animate_red_flicker 1s linear forwards;
+    animation: animate_red_flicker .5s linear forwards;
     animation-iteration-count: 1;
 }
 
 .green_flicker {
-    animation: animate_green_flicker 1s linear forwards;
+    animation: animate_green_flicker .5s linear forwards;
     animation-iteration-count: 1;
 }
 

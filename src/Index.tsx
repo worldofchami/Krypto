@@ -1,4 +1,11 @@
-import { createContext, useEffect, useState, useContext, useRef, MutableRefObject } from "react";
+import {
+    createContext,
+    useEffect,
+    useState,
+    useContext,
+    useRef,
+    MutableRefObject,
+} from "react";
 import { Link } from "react-router-dom";
 import Chart from "chart.js/auto";
 import {
@@ -131,15 +138,14 @@ const MarketSummaryBlock: React.FunctionComponent<Coin> = ({
     price_change_24h,
     high_24h,
     low_24h,
-    colour
+    colour,
 }) => {
-
     return (
         <Link to={`/coin/${aliases[id.toLowerCase()]}`}>
             <div
                 className="h-full w-56 sm:w-[18rem] rounded-3xl shrink-0 bg-[rgb(22,22,22)] hover:bg-[#323232] flex flex-col p-4 cursor-pointer shadow-lg"
                 draggable={false}
-                onDragStart={() => false} 
+                onDragStart={() => false}
             >
                 <div className="h-3/5 w-full">
                     <MarketSummaryChart
@@ -189,7 +195,9 @@ const MarketSummaryBlock: React.FunctionComponent<Coin> = ({
                         </span>
                     </div>
                     <div className="w-2/6 h-full flex">
-                        <span className={`text-xs sm:text-base ${colour}_flicker`}>
+                        <span
+                            className={`text-xs sm:text-base ${colour}_flicker`}
+                        >
                             ${current_price}
                         </span>
                     </div>
@@ -201,23 +209,29 @@ const MarketSummaryBlock: React.FunctionComponent<Coin> = ({
 
 const MarketSummaryContainer: React.FunctionComponent<{}> = () => {
     const msContainerRef = useRef<HTMLDivElement | null>(null);
-    const { events } = useDraggable(msContainerRef as MutableRefObject<HTMLDivElement>);
+    const { events } = useDraggable(
+        msContainerRef as MutableRefObject<HTMLDivElement>
+    );
 
-    const data: Coin[] = (useContext(AppContext) as MSCProps)?.["data"] as Coin[];
+    const data: Coin[] = (useContext(AppContext) as MSCProps)?.[
+        "data"
+    ] as Coin[];
 
     const { currency, price } = (useContext(AppContext) as RTData)?.["update"];
 
     const [currentPrice, setCurrentPrice] = useState<number>(price);
-    const [priceChangeColour, setPriceChangeColour] = useState<"green" | "red">("green");
+    const [priceChangeColour, setPriceChangeColour] = useState<"green" | "red">(
+        "green"
+    );
 
     useEffect(() => {
         setCurrentPrice((prev) => {
-            if(prev > price) setPriceChangeColour("red")
-            else setPriceChangeColour("green")
+            if (prev > price) setPriceChangeColour("red");
+            else setPriceChangeColour("green");
 
-            return price
+            return price;
         });
-    }, [currency, price])
+    }, [currency, price]);
 
     const marketSummaryBlocks: JSX.Element[] | undefined = data
         ?.filter((coin, index) => index < 7)
@@ -241,12 +255,11 @@ const MarketSummaryContainer: React.FunctionComponent<{}> = () => {
                         name={name}
                         symbol={symbol}
                         image={image}
-                        current_price={
-                            roundDecimal(
-                                name.toLowerCase() === currency.toLowerCase() ?
-                                price : current_price
-                            )
-                        }
+                        current_price={roundDecimal(
+                            name.toLowerCase() === currency.toLowerCase()
+                                ? price
+                                : current_price
+                        )}
                         price_change_24h={roundDecimal(
                             price_change_24h / current_price
                         )}
@@ -254,8 +267,9 @@ const MarketSummaryContainer: React.FunctionComponent<{}> = () => {
                         low_24h={low_24h}
                         idx={idx}
                         colour={
-                            name.toLowerCase() === currency.toLowerCase() ?
-                            priceChangeColour : undefined
+                            name.toLowerCase() === currency.toLowerCase()
+                                ? priceChangeColour
+                                : undefined
                         }
                         key={idx}
                     />
@@ -284,14 +298,11 @@ const CurrencyBlock: React.FunctionComponent<Coin> = ({
     current_price,
     price_change_24h,
     idx,
+    colour
 }) => {
     const coinAlias: string = aliases[id.toLowerCase()];
-    const coinURL =
-        coinAlias === 'NONE' ?
-        '' :
-        `/coin/${coinAlias}`;
+    const coinURL = coinAlias === "NONE" ? "" : `/coin/${coinAlias}`;
 
-        
     return (
         <>
             <Link to={coinURL}>
@@ -315,7 +326,7 @@ const CurrencyBlock: React.FunctionComponent<Coin> = ({
                         </span>
                     </div>
                     <div className="h-full flex items-center col-span-1 max-sm:col-span-2 max-sm:pl-8 max-sm:items-start">
-                        <span className="text-stateNeutral text-sm">
+                        <span className={`text-sm ${colour}_flicker`}>
                             ${roundedDecimalAsString(current_price)}
                         </span>
                     </div>
@@ -353,6 +364,22 @@ const CurrencyBlockContainer: React.FunctionComponent<{}> = () => {
     const [blockCount, setBlockCount] = useState<number>(10);
     const data = (useContext(AppContext) as MSCProps)?.["data"] as Coin[];
 
+    const { currency, price } = (useContext(AppContext) as RTData)?.["update"];
+
+    const [currentPrice, setCurrentPrice] = useState<number>(price);
+    const [priceChangeColour, setPriceChangeColour] = useState<"green" | "red">(
+        "green"
+    );
+
+    useEffect(() => {
+        setCurrentPrice((prev) => {
+            if (prev > price) setPriceChangeColour("red");
+            else setPriceChangeColour("green");
+
+            return price;
+        });
+    }, [currency, price]);
+
     const currencyBlocks: JSX.Element[] | undefined = data
         ?.filter((coin, index) => index < blockCount)
         ?.map(
@@ -366,10 +393,18 @@ const CurrencyBlockContainer: React.FunctionComponent<{}> = () => {
                         name={name}
                         symbol={symbol}
                         image={image}
-                        current_price={roundDecimal(current_price)}
+                        current_price={roundDecimal(
+                            name.toLowerCase() === currency.toLowerCase() ?
+                            price : current_price)
+                        }
                         price_change_24h={roundDecimal(price_change_24h)}
                         idx={idx}
-                        key={`CURRENCY_BLOCK_${idx}`}
+                        colour={
+                            name.toLowerCase() === currency.toLowerCase()
+                                ? priceChangeColour
+                                : undefined
+                        }
+                        key={idx}
                     />
                 );
             }
@@ -397,10 +432,16 @@ export const NewsBlock: React.FunctionComponent<NewsArticle> = ({
 
     if (currencies) {
         currencyPills = currencies
-        .filter(({ code }) => code.indexOf("_") === -1)
-        .map(({ code, title }, idx) => {
-            return <CurrencyPill text={code} id={title.toLowerCase()} key={idx} />;
-        })
+            .filter(({ code }) => code.indexOf("_") === -1)
+            .map(({ code, title }, idx) => {
+                return (
+                    <CurrencyPill
+                        text={code}
+                        id={title.toLowerCase()}
+                        key={idx}
+                    />
+                );
+            });
     }
 
     return (
