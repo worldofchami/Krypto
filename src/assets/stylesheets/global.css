@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --background: #121b1b;
+}
+
+html[data-theme="light"] {
+    --background: #e7e7e7;
+}
+
 @font-face {
     font-family: HelveticaNeue93;
     src: url('../fonts/HelveticaNeue93BlExt.ttf') format('truetype');
@@ -59,12 +67,9 @@ div.skeleton-override {
 }
 
 @layer base {
-    :root {
-        color-scheme: dark;
-    }
-
     html {
-        @apply bg-[#121b1b] text-txt;
+        @apply text-txt;
+        background: var(--background);
     }
 
     body {
@@ -73,6 +78,17 @@ div.skeleton-override {
             linear-gradient(121.28deg, #000000 0%, #5f8468 100%),
             linear-gradient(360deg, #000000 0%, #10101c 100%),
             linear-gradient(114.9deg, #0e190d 0%, #0a1914 100%),
+            radial-gradient(100% 148.07% at 0% 0%, #194834 0%, #3a594e 100%);
+        background-blend-mode: screen, color-dodge, overlay, difference, normal;
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite forwards;
+    }
+
+    html[data-theme="light"] body {
+        background: radial-gradient(50% 123.47% at 50% 50%, #e1e1e1 0%, #fff 100%),
+            linear-gradient(121.28deg, #4bff0a 0%, #5f8468 100%),
+            linear-gradient(360deg, #fff 0%, #fff 100%),
+            linear-gradient(114.9deg, #14ee00 0%, #fff 100%),
             radial-gradient(100% 148.07% at 0% 0%, #194834 0%, #3a594e 100%);
         background-blend-mode: screen, color-dodge, overlay, difference, normal;
         background-size: 400% 400%;

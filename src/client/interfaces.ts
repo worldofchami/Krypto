@@ -87,3 +87,9 @@ export interface CBCProps {
 export interface MSConProps {
     limit: number;
 }
+
+export type theme = ("dark" | "light");
+
+export interface CtxTheme {
+    theme: theme;
+}

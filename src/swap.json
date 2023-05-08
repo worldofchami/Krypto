@@ -1,0 +1,9 @@
+{
+    "BTC": "bitcoin",
+    "ETH": "ethereum",
+    "USDT": "tether",
+    "BNB": "binance-coin",
+    "USDC": "usd-coin",
+    "XRP": "xrp",
+    "ADA": "cardano"
+}

@@ -12,14 +12,14 @@ import {
     ChartData,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { AppContext } from "./App";
+import { App, AppContext, RealTimeContext } from "./App";
 import {
     aliases,
     CurrencyPill,
     SectionHeading,
 } from "./components/ui/Display";
 import { useDraggable } from "react-use-draggable-scroll";
-import { CBCProps, Coin, MSChartProps, MSConProps, MSCProps, NBProps, NewsArticle, RTData } from "./client/interfaces";
+import { CBCProps, Coin, CtxTheme, MSChartProps, MSConProps, MSCProps, NBProps, NewsArticle, RTData, theme } from "./client/interfaces";
 import React from "react";
 import { CircularProgress } from "@mui/material";
 Chart.register(CategoryScale);
@@ -200,13 +200,11 @@ const MarketSummaryBlock: React.FunctionComponent<Coin> = ({ id, name, symbol, i
 
 export const MarketSummaryContainer: React.FunctionComponent<MSConProps> = ({ limit }) => {
     const msContainerRef = useRef<HTMLDivElement | null>(null);
-    const { events } = useDraggable(
-        msContainerRef as MutableRefObject<HTMLDivElement>
-    );
+    const { events } = useDraggable(msContainerRef as MutableRefObject<HTMLDivElement>);
 
     const data: Coin[] = (useContext(AppContext) as MSCProps)?.["data"] as Coin[];
 
-    const { currency, price } = (useContext(AppContext) as RTData)?.["update"];
+    const { currency, price } = (useContext(RealTimeContext) as RTData)?.["update"];
 
     const [currentPrice, setCurrentPrice] = useState<number>(price);
     const [priceChangeColour, setPriceChangeColour] = useState<"green" | "red">(
@@ -330,7 +328,7 @@ const CurrencyBlock: React.FunctionComponent<Coin> = ({ id, name, symbol, image,
 export const CurrencyBlockContainer: React.FunctionComponent<CBCProps> = ({ limit }) => {
     const data = (useContext(AppContext) as MSCProps)?.["data"] as Coin[];
 
-    const { currency, price } = (useContext(AppContext) as RTData)?.["update"];
+    const { currency, price } = (useContext(RealTimeContext) as RTData)?.["update"];
 
     const [currentPrice, setCurrentPrice] = useState<number>(price);
     const [priceChangeColour, setPriceChangeColour] = useState<"green" | "red">(
@@ -464,6 +462,11 @@ const NewsBlockContainer = (): JSX.Element => {
 
 export const Index: React.FunctionComponent<{}> = () => {
     const data = (useContext(AppContext) as MSCProps)?.["data"] as Coin[];
+    const theme = (useContext(AppContext) as CtxTheme)?.["theme"] as theme;
+
+    // TODO: figure out why this keeps printing:
+    // is context constanly updating? why?
+    console.log(theme)
 
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -475,7 +478,7 @@ export const Index: React.FunctionComponent<{}> = () => {
         <>
             <SectionHeading text="Market Summary" primary={false} />
             <MarketSummaryContainer limit={7} />
-            <div className="flex flex-col h-fit gap-x-4">
+            <div className={`flex flex-col h-fit gap-x-4 ${theme}`}>
                 <div className="w-full h-fit overflow-hidden">
                     <SectionHeading text="Top Cryptocurrencies" primary={false} />
                     <CurrencyBlockContainer limit={10} />

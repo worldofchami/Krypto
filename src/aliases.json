@@ -5,8 +5,8 @@
     "binancecoin": "binance-coin",
     "bnb" : "binance-coin",
     "usd-coin": "usd-coin",
-    "xrp": "ripple"
-,    "ripple": "xrp",
+    "xrp": "ripple",
+    "ripple": "xrp",
     "cardano": "cardano",
     "staked-ether": "steth",
     "lido-staked-ether": "steth",

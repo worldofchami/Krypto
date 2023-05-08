@@ -5,9 +5,10 @@ import { CoinPage } from "./CoinPage";
 import { NavBar } from "./NavBar";
 import { Footer } from "./Footer";
 import { Coins } from "./Coins";
-import { Coin, MSCProps, NBProps, NewsArticle, RTData, RTUpdate } from "./client/interfaces";
+import { Coin, CtxTheme, MSCProps, NBProps, NewsArticle, RTData, RTUpdate, theme } from "./client/interfaces";
 import { ScrollResetter } from "./ScrollResetter";
 import { aliases } from "./components/ui/Display";
+import { useFetchLocalStorage, useUpdateTheme } from "./hooks/hooks";
 
 export const BINANCE_BASE_URL = "https://api.binance.com";
 export const CG_BASE_URL = "https://api.coingecko.com/api/v3";
@@ -31,7 +32,8 @@ const processDescription = (description: string): string => {
     } else return "";
 };
 
-export const AppContext = createContext<MSCProps | NBProps | RTData | null>(null);
+export const AppContext = createContext<MSCProps | NBProps | RTData | CtxTheme | null>(null);
+export const RealTimeContext = createContext<RTData | null>(null);
 
 export const App = (): React.ReactElement | null => {
     const routes: React.ReactElement | null = useRoutes([
@@ -54,11 +56,28 @@ export const App = (): React.ReactElement | null => {
     const [data, setData] = useState<Coin[]>([]);
     const [newsData, setNewsData] = useState<NewsArticle[]>([]);
 
+    const userTheme = useFetchLocalStorage("theme") as theme;
+
+    const [theme, setTheme] = useState<theme>(userTheme);
+
     const contextStates = {
         data,
         newsData,
+        theme,
+    };
+
+    const u: RTUpdate = {currency: 'btc', price: 2};
+
+    const rtContextStates = {
         update,
     };
+
+    useEffect(() => {
+        setTheme(userTheme);
+        useUpdateTheme(userTheme);
+
+        return () => {};
+    }, [userTheme])
 
     useEffect(() => {
         //Get BTC price
@@ -78,7 +97,7 @@ export const App = (): React.ReactElement | null => {
             const data = await response.json();
 
             const coinNames: string[] = data?.map(({ name }: Coin, idx: number) => {
-                if(idx < 10) return name;
+                if(idx < 100) return name;
             });
 
             // Removes null values
@@ -88,7 +107,7 @@ export const App = (): React.ReactElement | null => {
                 if(name) return aliases[name.replace(new RegExp(" ", "g"), '-').toLowerCase()]
             });
 
-            const socketUrl = `wss://ws.coincap.io/prices?assets=${coinAliases.splice(0, 10).join(',')}`;
+            const socketUrl = `wss://ws.coincap.io/prices?assets=${coinAliases.splice(0, 100).join(',')}`;
             const ws = new WebSocket(socketUrl);
 
             ws.onopen = (event) => {
@@ -132,7 +151,9 @@ export const App = (): React.ReactElement | null => {
         <AppContext.Provider value={contextStates}>
             <ScrollResetter />
             <NavBar />
-            {routes}
+            <RealTimeContext.Provider value={rtContextStates}>
+                {routes}
+            </RealTimeContext.Provider>
             <Footer />
         </AppContext.Provider>
     );
