@@ -1,19 +1,5 @@
-export interface MSCProps {
-    data: Coin[];
-}
-
-export interface NBProps {
-    newsData: NewsArticle[];
-}
-
-export interface MSChartProps {
-    current_price: number;
-    high_24h: number;
-    low_24h: number;
-    price_change_24h: number;
-}
-
 export interface CoinInfo {
+    name: string;
     description: string;
     upvotes: number;
     categories: string[];
@@ -40,11 +26,6 @@ export interface Coin {
     high_24h?: number;
     low_24h?: number;
     idx?: number;
-}
-
-
-export interface ICoinProps {
-    priceData: CoinPrices[];
 }
 
 export interface NewsArticle {

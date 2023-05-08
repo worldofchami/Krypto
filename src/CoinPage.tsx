@@ -1,19 +1,15 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { aliases, symbols } from "./components/ui/Display";
 import { AppContext } from "./App";
-import PriceData from "./assets/json/prices.json";
-import BitcoinData from "./assets/json/bitcoin.json";
-import BTCNews from "./assets/json/btcnews.json";
 import { ChartData, ChartOptions, TooltipItem } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { formatDate, NewsBlock, roundedDecimalAsString } from "./Index";
 import {
     DropDown,
     DropDownContainer,
-    SectionHeading,
 } from "./components/ui/Display";
-import { Coin, CoinInfo, CoinPrices, ICoinProps, MSCProps, NewsArticle, RTData, Test } from "./interfaces/interfaces";
+import { Coin, CoinInfo, CoinPrices, ICoinProps, MSCProps, NewsArticle, RTData, Test } from "./client/interfaces";
 
 const processDescription = (description: string): string => {
     if (description !== undefined) {

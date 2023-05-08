@@ -9,7 +9,7 @@ import { Footer } from "./Footer";
 import { TestChart } from "./TestChart";
 import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 import { Coins } from "./Coins";
-import { Coin, MSCProps, NBProps, NewsArticle, RTData, RTUpdate } from "./interfaces/interfaces";
+import { Coin, MSCProps, NBProps, NewsArticle, RTData, RTUpdate } from "./client/interfaces";
 import { ScrollResetter } from "./ScrollResetter";
 
 export const BINANCE_BASE_URL = "https://api.binance.com";

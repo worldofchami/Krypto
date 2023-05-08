@@ -83,3 +83,7 @@ export interface Test {
 export interface CBCProps {
     limit: number;
 }
+
+export interface MSConProps {
+    limit: number;
+}

@@ -4,10 +4,11 @@ import dotenv from "dotenv";
 dotenv.config();
 const port = process.env.PORT || 3000;
 import cors from "cors";
+import { Coin, CoinInfo, CoinPrices, NewsArticle } from "./interfaces";
 app.use(cors());
 
 app.listen(port, () => {
-    console.log("listening", port);
+    console.log("listening");
 });
 
 export const BINANCE_BASE_URL = "https://api.binance.com";
@@ -31,72 +32,6 @@ const processDescription = (description: string): string => {
         return description.split("\\r").join("").split("\\n").join("\n");
     } else return "";
 };
-
-export interface MSCProps {
-    data: Coin[];
-}
-
-export interface NBProps {
-    newsData: NewsArticle[];
-}
-
-export interface MSChartProps {
-    current_price: number;
-    high_24h: number;
-    low_24h: number;
-    price_change_24h: number;
-}
-
-export interface CoinInfo {
-    name: string;
-    description: string;
-    upvotes: number;
-    categories: string[];
-    genesisDate: Date;
-    image: string;
-    symbol: string;
-    page: string;
-    rank: number;
-}
-
-export interface CoinPrices {
-    price: string;
-    time: Date;
-    date: Date;
-}
-
-export interface Coin {
-    id: string;
-    name: string;
-    symbol: string;
-    image: string;
-    current_price: number;
-    price_change_24h: number;
-    high_24h?: number;
-    low_24h?: number;
-    idx?: number;
-}
-
-
-export interface ICoinProps {
-    priceData: CoinPrices[];
-}
-
-export interface NewsArticle {
-    kind: "news" | "media";
-    source: {
-        title: string;
-    };
-    title: string;
-    url: string;
-    currencies?: [
-        {
-            code: string;
-            title: string;
-        }
-    ];
-    created_at: string;
-}
 
 const getBinance = async (): Promise<void> => {
     const response = await fetch(
@@ -166,12 +101,6 @@ const fetchCoinData = async (id: string): Promise<void> => {
 app.get('/info', (req, res) => {
     res.json(CoinData);
 });
-
-export interface Test {
-    priceUsd: string;
-    time: string;
-    date: string;
-}
 
 let PriceData: CoinPrices[] = [];
 let id: string = "";

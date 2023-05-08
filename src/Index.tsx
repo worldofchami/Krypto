@@ -1,5 +1,4 @@
 import {
-    createContext,
     useEffect,
     useState,
     useContext,
@@ -11,19 +10,17 @@ import Chart from "chart.js/auto";
 import {
     CategoryScale,
     ChartData,
-    ChartOptions,
-    ChartTypeRegistry,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { AppContext } from "./App";
 import {
     aliases,
     CurrencyPill,
-    PrimaryButton,
     SectionHeading,
 } from "./components/ui/Display";
 import { useDraggable } from "react-use-draggable-scroll";
-import { CBCProps, Coin, MSChartProps, MSCProps, NBProps, NewsArticle, RTData } from "./interfaces/interfaces";
+import { CBCProps, Coin, MSChartProps, MSConProps, MSCProps, NBProps, NewsArticle, RTData } from "./client/interfaces";
+import React from "react";
 Chart.register(CategoryScale);
 
 export const roundDecimal = (num: number): number => {
@@ -37,20 +34,7 @@ export const roundedDecimalAsString = (num: number): string => {
 };
 
 export const formatDate = (date: Date): string => {
-    const months: string[] = [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-    ];
+    const months: string[] = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", ];
     return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
 };
 
@@ -121,21 +105,11 @@ const MarketSummaryChart: React.FunctionComponent<MSChartProps> = ({
     );
 };
 
-const MarketSummaryBlock: React.FunctionComponent<Coin> = ({
-    id,
-    name,
-    symbol,
-    image,
-    current_price,
-    price_change_24h,
-    high_24h,
-    low_24h,
-    colour,
-}) => {
+const MarketSummaryBlock: React.FunctionComponent<Coin> = ({ id, name, symbol, image, current_price, price_change_24h, high_24h, low_24h, colour, }) => {
     return (
         <Link to={`/coin/${aliases[id.toLowerCase()]}`}>
             <div
-                className="h-full w-56 sm:w-[18rem] rounded-3xl shrink-0 bg-[rgb(22,22,22)] hover:bg-[#323232] flex flex-col p-4 cursor-pointer shadow-lg"
+                className="h-full w-56 sm:w-[18rem] rounded-3xl shrink-0 glass flex flex-col p-4 cursor-pointer shadow-lg"
                 draggable={false}
                 onDragStart={() => false}
             >
@@ -199,7 +173,7 @@ const MarketSummaryBlock: React.FunctionComponent<Coin> = ({
     );
 };
 
-const MarketSummaryContainer: React.FunctionComponent<{}> = () => {
+export const MarketSummaryContainer: React.FunctionComponent<MSConProps> = ({ limit }) => {
     const msContainerRef = useRef<HTMLDivElement | null>(null);
     const { events } = useDraggable(
         msContainerRef as MutableRefObject<HTMLDivElement>
@@ -226,21 +200,8 @@ const MarketSummaryContainer: React.FunctionComponent<{}> = () => {
     }, [currency, price]);
 
     const marketSummaryBlocks: JSX.Element[] | undefined = data
-        ?.filter((coin, index) => index < 7)
-        ?.map(
-            (
-                {
-                    id,
-                    name,
-                    symbol,
-                    image,
-                    current_price,
-                    price_change_24h,
-                    high_24h,
-                    low_24h,
-                },
-                idx
-            ) => {
+        ?.filter((coin, index) => index < limit)
+        ?.map(({ id, name, symbol, image, current_price, price_change_24h, high_24h, low_24h, }, idx) => {
                 return (
                     <MarketSummaryBlock
                         id={id}
@@ -282,16 +243,7 @@ const MarketSummaryContainer: React.FunctionComponent<{}> = () => {
     );
 };
 
-const CurrencyBlock: React.FunctionComponent<Coin> = ({
-    id,
-    name,
-    symbol,
-    image,
-    current_price,
-    price_change_24h,
-    idx,
-    colour
-}) => {
+const CurrencyBlock: React.FunctionComponent<Coin> = ({ id, name, symbol, image, current_price, price_change_24h, idx, colour }) => {
     const coinAlias: string = aliases[id.toLowerCase()];
     const coinURL = coinAlias === "NONE" ? "" : `/coin/${coinAlias}`;
 
@@ -373,11 +325,7 @@ export const CurrencyBlockContainer: React.FunctionComponent<CBCProps> = ({ limi
 
     const currencyBlocks: JSX.Element[] | undefined = data
         ?.filter((coin, index) => index < limit)
-        ?.map(
-            (
-                { id, name, symbol, image, current_price, price_change_24h },
-                idx
-            ) => {
+        ?.map(({ id, name, symbol, image, current_price, price_change_24h }, idx) => {
                 return (
                     <CurrencyBlock
                         id={id}
@@ -403,21 +351,14 @@ export const CurrencyBlockContainer: React.FunctionComponent<CBCProps> = ({ limi
 
     return (
         <>
-            <div className="bg-[rgb(22,22,22)] w-full rounded-2xl flex flex-col gap-y-1 p-4">
+            <div className="glass w-full rounded-2xl flex flex-col gap-y-1 p-4">
                 {currencyBlocks}
             </div>
         </>
     );
 };
 
-export const NewsBlock: React.FunctionComponent<NewsArticle> = ({
-    kind,
-    source,
-    title,
-    url,
-    currencies,
-    created_at,
-}) => {
+export const NewsBlock: React.FunctionComponent<NewsArticle> = ({ kind, source, title, url, currencies, created_at, }) => {
     const publisher = source.title;
     let currencyPills: JSX.Element[] | undefined;
 
@@ -489,7 +430,7 @@ const NewsBlockContainer = (): JSX.Element => {
         );
 
     return (
-        <div className="bg-[rgb(22,22,22)] w-full rounded-2xl flex flex-col gap-y-1 p-4">
+        <div className="glass w-full rounded-2xl flex flex-col gap-y-1 p-4">
             {newsBlocks}
         </div>
     );
@@ -499,15 +440,13 @@ export const Index: React.FunctionComponent<{}> = () => {
     return (
         <>
             <SectionHeading text="Market Summary" primary={false} />
-            <MarketSummaryContainer />
+            <MarketSummaryContainer limit={7} />
             <div className="flex flex-col h-fit gap-x-4">
                 <div className="w-full h-fit overflow-hidden">
                     <SectionHeading text="Top Cryptocurrencies" primary={false} />
-                    <CurrencyBlockContainer
-                        limit={10}
-                    />
+                    <CurrencyBlockContainer limit={10} />
                     <Link to="/coins">
-                        <div className="w-12 h-12 flex justify-center items-center rounded-full bg-[rgb(22,22,22)] hover:bg-baseColour mx-auto mt-2">
+                        <div className="w-12 h-12 flex justify-center items-center rounded-full glass mx-auto mt-2">
                             <img src="/public/arrowDownHgt.svg" className="w-4 object-contain" />
                         </div>
                     </Link>
