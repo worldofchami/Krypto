@@ -29,6 +29,15 @@
     background: rgba(25, 25, 25, 0.05);
 }
 
+div.skeleton:empty {
+    /* background: rgba(39, 39, 39, 0.22); */
+    background: linear-gradient(to right, rgba(39, 39, 39, 0.22), rgba(64, 64, 64, 0.22));
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.9px);
+    -webkit-backdrop-filter: blur(6.9px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
 @layer base {
     :root {
         color-scheme: dark;

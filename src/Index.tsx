@@ -5,7 +5,7 @@ import {
     useRef,
     MutableRefObject,
 } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Chart from "chart.js/auto";
 import {
     CategoryScale,
@@ -105,71 +105,93 @@ const MarketSummaryChart: React.FunctionComponent<MSChartProps> = ({
     );
 };
 
-const MarketSummaryBlock: React.FunctionComponent<Coin> = ({ id, name, symbol, image, current_price, price_change_24h, high_24h, low_24h, colour, }) => {
-    return (
-        <Link to={`/coin/${aliases[id.toLowerCase()]}`}>
+export const EmptyMarketSummaryBlocks = (): JSX.Element => {
+    const marketSummaryBlocks: JSX.Element[] = [];
+    
+    for(let i=0 ;i < 7; i++) {
+        marketSummaryBlocks.push(
             <div
-                className="h-full w-56 sm:w-[18rem] rounded-3xl shrink-0 glass flex flex-col p-4 cursor-pointer shadow-lg"
+                className="h-full w-56 sm:w-[18rem] rounded-3xl shrink-0 flex flex-col p-4 cursor-pointer shadow-lg skeleton"
                 draggable={false}
                 onDragStart={() => false}
-            >
-                <div className="h-3/5 w-full">
-                    <MarketSummaryChart
-                        current_price={current_price}
-                        high_24h={high_24h as number}
-                        low_24h={low_24h as number}
-                        price_change_24h={price_change_24h}
+                key={i}
+            ></div>
+        )
+    }
+
+    return (
+        <>
+            {marketSummaryBlocks}
+        </>
+    )
+};
+
+const MarketSummaryBlock: React.FunctionComponent<Coin> = ({ id, name, symbol, image, current_price, price_change_24h, high_24h, low_24h, colour, }) => {
+    const navigate = useNavigate();
+
+    return (
+        <div
+            className="h-full w-56 sm:w-[18rem] rounded-3xl shrink-0 glass flex flex-col p-4 cursor-pointer shadow-lg"
+            draggable={false}
+            onDragStart={() => false}
+            onClick={() => navigate(`/coin/${aliases[id.toLowerCase()]}`)}
+        >
+            <div className="h-3/5 w-full">
+                <MarketSummaryChart
+                    current_price={current_price}
+                    high_24h={high_24h as number}
+                    low_24h={low_24h as number}
+                    price_change_24h={price_change_24h}
+                />
+            </div>
+            <div className="h-2/5 w-full pr-3 flex pt-2">
+                <div className="w-1/6 h-full flex items-center">
+                    <img
+                        src={image}
+                        alt=""
+                        className="w-[80%] sm:mb-4 rounded-full"
                     />
                 </div>
-                <div className="h-2/5 w-full pr-3 flex pt-2">
-                    <div className="w-1/6 h-full flex items-center">
-                        <img
-                            src={image}
-                            alt=""
-                            className="w-[80%] sm:mb-4 rounded-full"
-                        />
-                    </div>
-                    <div className="w-3/6 h-full">
-                        <h1 className="text-xs sm:text-sm font-bold">
-                            {name}{" "}
-                            <span
-                                className={`font-black text-[.6rem] text-${getChangeColour(
-                                    price_change_24h
-                                )}`}
-                            >
-                                {symbol.toUpperCase()}
-                            </span>
-                        </h1>
+                <div className="w-3/6 h-full">
+                    <h1 className="text-xs sm:text-sm font-bold">
+                        {name}{" "}
                         <span
-                            className={`text-${getChangeColour(
+                            className={`font-black text-[.6rem] text-${getChangeColour(
                                 price_change_24h
                             )}`}
                         >
-                            <img
-                                src={`/${getChangeSvg(price_change_24h)}.svg`}
-                                alt=""
-                                className="w-[.6rem] h-[.6rem] inline-block"
-                            />
-                            &nbsp;
-                            <span
-                                className={`text-[.6rem] sm:text-xs font-bold text-${getChangeColour(
-                                    price_change_24h
-                                )}`}
-                            >
-                                {price_change_24h}%
-                            </span>
+                            {symbol.toUpperCase()}
                         </span>
-                    </div>
-                    <div className="w-2/6 h-full flex">
+                    </h1>
+                    <span
+                        className={`text-${getChangeColour(
+                            price_change_24h
+                        )}`}
+                    >
+                        <img
+                            src={`/${getChangeSvg(price_change_24h)}.svg`}
+                            alt=""
+                            className="w-[.6rem] h-[.6rem] inline-block"
+                        />
+                        &nbsp;
                         <span
-                            className={`text-xs sm:text-base ${colour}_flicker`}
+                            className={`text-[.6rem] sm:text-xs font-bold text-${getChangeColour(
+                                price_change_24h
+                            )}`}
                         >
-                            ${current_price}
+                            {price_change_24h}%
                         </span>
-                    </div>
+                    </span>
+                </div>
+                <div className="w-2/6 h-full flex">
+                    <span
+                        className={`text-xs sm:text-base ${colour}_flicker`}
+                    >
+                        ${current_price}
+                    </span>
                 </div>
             </div>
-        </Link>
+        </div>
     );
 };
 
@@ -179,9 +201,7 @@ export const MarketSummaryContainer: React.FunctionComponent<MSConProps> = ({ li
         msContainerRef as MutableRefObject<HTMLDivElement>
     );
 
-    const data: Coin[] = (useContext(AppContext) as MSCProps)?.[
-        "data"
-    ] as Coin[];
+    const data: Coin[] = (useContext(AppContext) as MSCProps)?.["data"] as Coin[];
 
     const { currency, price } = (useContext(AppContext) as RTData)?.["update"];
 
@@ -237,7 +257,7 @@ export const MarketSummaryContainer: React.FunctionComponent<MSConProps> = ({ li
                 ref={msContainerRef}
                 {...events}
             >
-                {marketSummaryBlocks}
+                {data.length > 0 ? marketSummaryBlocks : <EmptyMarketSummaryBlocks />}
             </div>
         </>
     );
@@ -351,7 +371,7 @@ export const CurrencyBlockContainer: React.FunctionComponent<CBCProps> = ({ limi
 
     return (
         <>
-            <div className="glass w-full rounded-2xl flex flex-col gap-y-1 p-4">
+            <div className="glass w-full rounded-2xl flex flex-col gap-y-1 p-4 skeleton min-h-[60vh]">
                 {currencyBlocks}
             </div>
         </>
@@ -378,7 +398,7 @@ export const NewsBlock: React.FunctionComponent<NewsArticle> = ({ kind, source, 
 
     return (
         <Link to={url} target="_blank">
-            <div className="h-28 sm:h-32 bg-baseColour hover:bg-[#323232] p-6 rounded-2xl flex flex-col justify-around">
+            <div className="h-28 sm:h-32 glass p-6 rounded-2xl flex flex-col justify-around">
                 <div>
                     <h1 className="text-[.8rem] sm:text-sm font-bold truncate">
                         {title}
@@ -397,9 +417,7 @@ export const NewsBlock: React.FunctionComponent<NewsArticle> = ({ kind, source, 
 };
 
 const NewsBlockContainer = (): JSX.Element => {
-    const data = (useContext(AppContext) as NBProps)?.[
-        "newsData"
-    ] as NewsArticle[];
+    const data = (useContext(AppContext) as NBProps)?.["newsData"] as NewsArticle[];
 
     const newsBlocks = data
         .filter((article, idx) => idx < 4)
@@ -430,7 +448,7 @@ const NewsBlockContainer = (): JSX.Element => {
         );
 
     return (
-        <div className="glass w-full rounded-2xl flex flex-col gap-y-1 p-4">
+        <div className="bg-[rgb(22,22,22)] w-full rounded-2xl flex flex-col gap-y-1 p-4 skeleton min-h-[60vh]">
             {newsBlocks}
         </div>
     );
