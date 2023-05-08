@@ -21,6 +21,7 @@ import {
 import { useDraggable } from "react-use-draggable-scroll";
 import { CBCProps, Coin, MSChartProps, MSConProps, MSCProps, NBProps, NewsArticle, RTData } from "./client/interfaces";
 import React from "react";
+import { CircularProgress } from "@mui/material";
 Chart.register(CategoryScale);
 
 export const roundDecimal = (num: number): number => {
@@ -111,11 +112,13 @@ export const EmptyMarketSummaryBlocks = (): JSX.Element => {
     for(let i=0 ;i < 7; i++) {
         marketSummaryBlocks.push(
             <div
-                className="h-full w-56 sm:w-[18rem] rounded-3xl shrink-0 flex flex-col p-4 cursor-pointer shadow-lg skeleton"
+                className="h-full w-56 sm:w-[18rem] rounded-3xl shrink-0 flex flex-col p-4 cursor-pointer shadow-lg skeleton skeleton-override"
                 draggable={false}
                 onDragStart={() => false}
                 key={i}
-            ></div>
+            >
+                <CircularProgress color="inherit" />
+            </div>
         )
     }
 
@@ -185,7 +188,7 @@ const MarketSummaryBlock: React.FunctionComponent<Coin> = ({ id, name, symbol, i
                 </div>
                 <div className="w-2/6 h-full flex">
                     <span
-                        className={`text-xs sm:text-base ${colour}_flicker`}
+                        className={`text-xs sm:text-base flicker ${colour}_flicker`}
                     >
                         ${current_price}
                     </span>
@@ -290,7 +293,7 @@ const CurrencyBlock: React.FunctionComponent<Coin> = ({ id, name, symbol, image,
                         </span>
                     </div>
                     <div className="h-full flex items-center col-span-1 max-sm:col-span-2 max-sm:pl-8 max-sm:items-start">
-                        <span className={`text-sm ${colour}_flicker`}>
+                        <span className={`text-sm flicker ${colour}_flicker`}>
                             ${roundedDecimalAsString(current_price)}
                         </span>
                     </div>
@@ -343,6 +346,14 @@ export const CurrencyBlockContainer: React.FunctionComponent<CBCProps> = ({ limi
         });
     }, [currency, price]);
 
+    const [loading, setLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        if(data.length > 0) setLoading(false);
+
+        return () => {};
+    }, [data]);
+
     const currencyBlocks: JSX.Element[] | undefined = data
         ?.filter((coin, index) => index < limit)
         ?.map(({ id, name, symbol, image, current_price, price_change_24h }, idx) => {
@@ -371,8 +382,8 @@ export const CurrencyBlockContainer: React.FunctionComponent<CBCProps> = ({ limi
 
     return (
         <>
-            <div className="glass w-full rounded-2xl flex flex-col gap-y-1 p-4 skeleton min-h-[60vh]">
-                {currencyBlocks}
+            <div className={`glass w-full rounded-2xl flex flex-col gap-y-1 p-4 skeleton min-h-[60vh] ${loading ? 'skeleton-override' : ''}`}>
+                {loading ? <CircularProgress color="inherit" /> : currencyBlocks}
             </div>
         </>
     );
@@ -419,20 +430,17 @@ export const NewsBlock: React.FunctionComponent<NewsArticle> = ({ kind, source, 
 const NewsBlockContainer = (): JSX.Element => {
     const data = (useContext(AppContext) as NBProps)?.["newsData"] as NewsArticle[];
 
+    const [loading, setLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        if(data.length > 0) setLoading(false);
+
+        return () => {};
+    }, [data]);
+
     const newsBlocks = data
         .filter((article, idx) => idx < 4)
-        .map(
-            (
-                {
-                    kind,
-                    source,
-                    title,
-                    url,
-                    currencies,
-                    created_at,
-                }: NewsArticle,
-                key
-            ) => {
+        .map(({ kind, source, title, url, currencies, created_at, }: NewsArticle, key) => {
                 return (
                     <NewsBlock
                         kind={kind}
@@ -448,13 +456,21 @@ const NewsBlockContainer = (): JSX.Element => {
         );
 
     return (
-        <div className="bg-[rgb(22,22,22)] w-full rounded-2xl flex flex-col gap-y-1 p-4 skeleton min-h-[60vh]">
-            {newsBlocks}
+        <div className={`bg-[rgb(22,22,22)] w-full rounded-2xl flex flex-col gap-y-1 p-4 skeleton min-h-[60vh] ${loading ? 'skeleton-override' : ''}`}>
+            {loading ? <CircularProgress color="inherit" /> : newsBlocks}
         </div>
     );
 };
 
 export const Index: React.FunctionComponent<{}> = () => {
+    const data = (useContext(AppContext) as MSCProps)?.["data"] as Coin[];
+
+    const [loading, setLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        if(data.length > 0) setLoading(false);
+    }, [data]);
+
     return (
         <>
             <SectionHeading text="Market Summary" primary={false} />
@@ -463,7 +479,10 @@ export const Index: React.FunctionComponent<{}> = () => {
                 <div className="w-full h-fit overflow-hidden">
                     <SectionHeading text="Top Cryptocurrencies" primary={false} />
                     <CurrencyBlockContainer limit={10} />
-                    <Link to="/coins">
+                    <Link
+                        to="/coins"
+                        className={`${loading ? 'hidden' : 'block'}`}
+                    >
                         <div className="w-12 h-12 flex justify-center items-center rounded-full glass mx-auto mt-2">
                             <img src="/public/arrowDownHgt.svg" className="w-4 object-contain" />
                         </div>

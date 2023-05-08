@@ -10,22 +10,7 @@ import {
     DropDownContainer,
 } from "./components/ui/Display";
 import { Coin, CoinInfo, CoinPrices, ICoinProps, MSCProps, NewsArticle, RTData, Test } from "./client/interfaces";
-
-const processDescription = (description: string): string => {
-    if (description !== undefined) {
-        while (description.indexOf("<") >= 0) {
-            const start = description.substring(0, description.indexOf("<"));
-            const toDelete = description.substring(
-                start.length,
-                description.indexOf(">") + 1
-            );
-
-            description = description.replaceAll(toDelete, "");
-        }
-
-        return description.replaceAll("\\r", "").replaceAll("\\n", "\n");
-    } else return "";
-};
+import React from "react";
 
 const capitaliseStr = (str: string): string => {
     if(str) {
@@ -264,7 +249,7 @@ export const CoinPage: React.FunctionComponent<{}> = () => {
                     <h1 className="text-md font-heading">{coinInfo?.symbol?.toUpperCase()}</h1>
                 </div>
                 <div className="flex flex-col gap-y-6">
-                    <h1 className={`text-3xl ${priceChangeColour}_flicker`}>
+                    <h1 className={`text-3xl flicker ${priceChangeColour}_flicker`}>
                         ${coin && roundedDecimalAsString(currentPrice ? currentPrice : coin?.current_price)}
                     </h1>
                     <p>{coinInfo?.description}</p>

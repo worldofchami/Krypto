@@ -10,6 +10,9 @@
     "start": "chmod +x start.sh && ./start.sh"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.12.3",
     "@types/chart.js": "^2.9.37",
     "@types/cors": "^2.8.13",
     "chart.js": "^4.2.1",

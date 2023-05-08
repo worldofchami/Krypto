@@ -1,7 +1,10 @@
+import React from "react";
 import { createContext, Dispatch, SetStateAction, useContext, useState } from "react";
 import { Link } from "react-router-dom";
+// @ts-ignore
 import AliasesJSON from '../../aliases.json';
 import { TimePeriod } from "../../CoinPage";
+// @ts-ignore
 import SymbolsJSON from '../../symbols.json';
 
 type IndexableObject = { [index: string]: string };

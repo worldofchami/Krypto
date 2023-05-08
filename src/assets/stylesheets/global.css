@@ -17,6 +17,10 @@
     animation-iteration-count: 1;
 }
 
+.flicker {
+    color: #949494;
+}
+
 .glass {
     background: rgba(0, 0, 0, 0.22);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -36,6 +40,22 @@ div.skeleton:empty {
     backdrop-filter: blur(6.9px);
     -webkit-backdrop-filter: blur(6.9px);
     border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+div.skeleton-override {
+    background: linear-gradient(to right, rgba(39, 39, 39, 0.22), rgba(64, 64, 64, 0.22));
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.9px);
+    -webkit-backdrop-filter: blur(6.9px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.MuiCircularProgress-svg {
+    scale: 60%;
+    color: #00ff90;
 }
 
 @layer base {
@@ -98,7 +118,7 @@ div.skeleton:empty {
         }
 
         100% {
-            color: white;
+            color: #949494;
         }
     }
 
@@ -108,7 +128,7 @@ div.skeleton:empty {
         }
 
         100% {
-            color: white;
+            color: #949494;
         }
     }
 }

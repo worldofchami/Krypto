@@ -1,16 +1,13 @@
 import React, { createContext, useEffect, useState } from "react";
 import { useRoutes } from "react-router-dom";
 import { Index } from "./Index";
-import JSONData from "./assets/json/data.json";
-import NewsData from "./assets/json/news.json";
 import { CoinPage } from "./CoinPage";
 import { NavBar } from "./NavBar";
 import { Footer } from "./Footer";
-import { TestChart } from "./TestChart";
-import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 import { Coins } from "./Coins";
 import { Coin, MSCProps, NBProps, NewsArticle, RTData, RTUpdate } from "./client/interfaces";
 import { ScrollResetter } from "./ScrollResetter";
+import { aliases } from "./components/ui/Display";
 
 export const BINANCE_BASE_URL = "https://api.binance.com";
 export const CG_BASE_URL = "https://api.coingecko.com/api/v3";
@@ -27,10 +24,10 @@ const processDescription = (description: string): string => {
                 description.indexOf(">") + 1
             );
 
-            description = description.replaceAll(toDelete, "");
+            description = description.replace(new RegExp(toDelete, "g"), "");
         }
 
-        return description.replaceAll("\\r", "").replaceAll("\\n", "\n");
+        return description.replace(new RegExp("\\r", "g"), "").replace(new RegExp("\\n", "g"), "\n");
     } else return "";
 };
 
@@ -63,23 +60,7 @@ export const App = (): React.ReactElement | null => {
         update,
     };
 
-    const [socketUrl, setSocketUrl] = useState<string>(`wss://ws.coincap.io/prices?assets=bitcoin,ethereum`);
-
     useEffect(() => {
-        const ws = new WebSocket(socketUrl);
-
-        ws.onopen = (event) => {
-            console.log(event)
-        };
-    
-        ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            const currency = Object.keys(data)[0];
-            const price = Number(Object.values(data)[0]);
-        
-            setUpdate({ currency, price });
-        };
-
         //Get BTC price
         const getBinance = async (): Promise<void> => {
             const response = await fetch(
@@ -96,37 +77,34 @@ export const App = (): React.ReactElement | null => {
 
             const data = await response.json();
 
-            const coinNames: string[] = data.map(({ name }: Coin, idx: number) => {
+            const coinNames: string[] = data?.map(({ name }: Coin, idx: number) => {
                 if(idx < 10) return name;
             });
-        
+
             // Removes null values
             coinNames.filter((name) => name);
 
-            setSocketUrl(`wss://ws.coincap.io/prices?assets=${coinNames.join(',')}`);
+            const coinAliases: (string | undefined)[] = coinNames?.map((name) => {
+                if(name) return aliases[name.replace(new RegExp(" ", "g"), '-').toLowerCase()]
+            });
 
-            setData(
-                data.map(
-                    ({
-                        id,
-                        name,
-                        symbol,
-                        image,
-                        current_price,
-                        price_change_24h,
-                        high_24h,
-                        low_24h,
-                    }: Coin) => {
-                        return {
-                            id,
-                            name,
-                            symbol,
-                            image,
-                            current_price,
-                            price_change_24h,
-                            high_24h,
-                            low_24h,
-                        };
+            const socketUrl = `wss://ws.coincap.io/prices?assets=${coinAliases.splice(0, 10).join(',')}`;
+            const ws = new WebSocket(socketUrl);
+
+            ws.onopen = (event) => {
+                console.log(event)
+            };
+        
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                const currency = Object.keys(data)[0];
+                const price = Number(Object.values(data)[0]);
+            
+                setUpdate({ currency, price });
+            };
+        
+            setData(data.map(({ id, name, symbol, image, current_price, price_change_24h, high_24h, low_24h, }: Coin) => {
+                    return { id, name, symbol, image, current_price, price_change_24h, high_24h, low_24h, };
                     }
                 )
             );
