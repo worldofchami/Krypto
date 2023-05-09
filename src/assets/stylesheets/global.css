@@ -4,10 +4,12 @@
 
 :root {
     --background: #121b1b;
+    --text: white;
 }
 
 html[data-theme="light"] {
     --background: #e7e7e7;
+    --text: #0d0d0d;
 }
 
 @font-face {
@@ -68,7 +70,7 @@ div.skeleton-override {
 
 @layer base {
     html {
-        @apply text-txt;
+        color: var(--text);
         background: var(--background);
     }
 
@@ -85,14 +87,37 @@ div.skeleton-override {
     }
 
     html[data-theme="light"] body {
-        background: radial-gradient(50% 123.47% at 50% 50%, #e1e1e1 0%, #fff 100%),
-            linear-gradient(121.28deg, #4bff0a 0%, #5f8468 100%),
-            linear-gradient(360deg, #fff 0%, #fff 100%),
-            linear-gradient(114.9deg, #14ee00 0%, #fff 100%),
+        background: radial-gradient(50% 123.47% at 50% 50%, #cccccc 0%, #c4c4c4 100%),
+            linear-gradient(121.28deg, #79ad81 0%, #5f8468 100%),
+            linear-gradient(360deg, #bfbfbf 0%, #bebebe 100%),
+            linear-gradient(114.9deg, #63836f 0%, #565f52 100%),
             radial-gradient(100% 148.07% at 0% 0%, #194834 0%, #3a594e 100%);
         background-blend-mode: screen, color-dodge, overlay, difference, normal;
         background-size: 400% 400%;
         animation: gradient 15s ease infinite forwards;
+    }
+
+    [data-theme="light"] {
+        & .glass {
+            background: rgba(255, 255, 255, 0.22);
+            box-shadow: 0 4px 30px rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(6.9px);
+            -webkit-backdrop-filter: blur(6.9px);
+            border: 1px solid rgba(0, 0, 0, 0.22);
+        }
+
+        & .bg-\[\#202020\] {
+            background: #cccccc;
+        }
+
+        & a > .bg-baseColour {
+            background-color: #dadada;
+            border: .5px solid #979797;
+        }
+
+        & .bg-\[rgb\(22\2c 22\2c 22\)\] {
+            background: #cdcdcd;
+        }
     }
 
     @keyframes gradient {

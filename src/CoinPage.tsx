@@ -101,7 +101,9 @@ export const CoinPage: React.FunctionComponent<{}> = () => {
     
     const coin: Coin = data?.filter((coin) => coin.id == id)[0];
 
-    const { currency, price } = (useContext(AppContext) as RTData)?.["update"];
+    const update = (useContext(AppContext) as RTData)?.["update"];
+
+    const { currency, price } = update ?? {};
 
     const [currentPrice, setCurrentPrice] = useState<number>(price);
     const [priceChangeColour, setPriceChangeColour] = useState<"green" | "red">(
@@ -109,7 +111,7 @@ export const CoinPage: React.FunctionComponent<{}> = () => {
     );
 
     useEffect(() => {
-        if(currency.toLowerCase() === coinInfo?.name.toLowerCase()) {
+        if(currency?.toLowerCase() === coinInfo?.name.toLowerCase()) {
             setCurrentPrice((prev) => {
                 if (prev > price) setPriceChangeColour("red");
                 else setPriceChangeColour("green");
