@@ -283,6 +283,8 @@ const CurrencyBlock: React.FunctionComponent<Coin> = ({ id, name, symbol, image,
                         />
                         <span className="font-bold truncate text-sm min-w-fit sm:w-[80%]">
                             {name}
+                            &nbsp;
+                            {id}
                         </span>
                     </div>
                     <div className="h-full flex items-center text-center col-span-1 max-sm:col-span-3 max-sm:row-span-2 max-sm:col-start-3 max-sm:text-right">

@@ -5,5 +5,9 @@
     "BNB": "binance-coin",
     "USDC": "usd-coin",
     "XRP": "xrp",
-    "ADA": "cardano"
+    "ADA": "cardano",
+    "STETH": "staked-ether",
+    "DOGE": "dogecoin",
+    "MATIC": "polygon",
+    "TRX": "tron"
 }
